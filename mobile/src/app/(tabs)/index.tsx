@@ -255,7 +255,7 @@ export default function EnchantedForestScreen() {
         {/* Hero Section with Cover Image */}
         <View style={{ height: SCREEN_HEIGHT * 0.55 }}>
           <Image
-            source={require('@/../../assets/images/enchanted-forest-cover.png')}
+            source={require('@/../assets/images/enchanted-forest-cover.png')}
             style={{ width: '100%', height: '100%' }}
             contentFit="cover"
           />

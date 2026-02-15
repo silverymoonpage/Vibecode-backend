@@ -63,8 +63,8 @@ export const enchantedMessages: GuidanceMessage[] = [
   },
   {
     id: 9,
-    title: "The Deer's Path",
-    message: "The deer creates trails not by intention, but by following what sustains it—water, shelter, nourishment. Your authentic path forms the same way. Follow what gives you life, and the trail will appear behind you.",
+    title: "You Are Being Guided",
+    message: "Everything around you is woven from who you are and from your faith, because you are the author of this fairy tale; you already know all the roads and paths, and you have also created all the characters who will guide you on this journey. All you have to do is to follow the signs, enjoy the journey, and perceive everything as a fascinating game - then any dead end turns into an opportunity, and every step brings you closer to the fairy tale.",
     symbol: "🦌",
   },
   {

@@ -39,8 +39,8 @@ export const enchantedMessages: GuidanceMessage[] = [
   },
   {
     id: 5,
-    title: "The Forest Canopy",
-    message: "High above, the canopy appears as one great sea of green, yet each leaf has its own story, its own dance with the wind. You are both part of something greater and a masterpiece in your own right. Neither truth diminishes the other.",
+    title: "Invisible to the Eyes",
+    message: "When you follow the heart's path, everything around you starts to glow, even if you don't see it yet. Remember: just because you cannot see something doesn't mean it doesn't exist. The forest has its own laws, and in time, everything will fall into place. Don't rush things. Don't rush yourself. Let go of control. All your wishes will come true once you are ready. The forest does not punish you - it loves you and cares for you. Trust and continue your journey.",
     symbol: "🌿",
   },
   {

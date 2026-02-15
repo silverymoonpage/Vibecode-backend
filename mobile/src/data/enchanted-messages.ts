@@ -69,8 +69,8 @@ export const enchantedMessages: GuidanceMessage[] = [
   },
   {
     id: 10,
-    title: "The Clearing",
-    message: "Every forest holds clearings—spaces where sunlight breaks through completely. These are not accidents but invitations. Your life too has openings, moments of pure possibility. Step into the light when it calls you. The forest wants you to bloom.",
+    title: "The New Beginning",
+    message: "And so you have arrived - at the place you have been walking toward for so long: your dream. And you see that this is not the end of your path, but the beginning of something new, and every step you take, each dream fulfilled becomes part of your story, which you experience with wonder. You realize that in the forest everything is connected: one road leads to another, not to reach a destination, but to discover yourself along the way through this enchanted forest.",
     symbol: "☀️",
   },
 ];

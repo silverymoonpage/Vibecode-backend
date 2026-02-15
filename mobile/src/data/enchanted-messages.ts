@@ -1,8 +1,11 @@
+import { ImageSourcePropType } from 'react-native';
+
 export interface GuidanceMessage {
   id: number;
   title: string;
   message: string;
   symbol: string;
+  image?: ImageSourcePropType;
 }
 
 export const enchantedMessages: GuidanceMessage[] = [
@@ -11,6 +14,7 @@ export const enchantedMessages: GuidanceMessage[] = [
     title: "The Road",
     message: "The enchanted forest is your life, and only you can find your way through it. Everything begins on the road, and only your heart can be your most reliable compass. Many adventures and unexpected turns lie ahead, but only you can decide whether your journey will be easy or difficult. The forest will offer you many paths - both familiar and unfamiliar and all of them lead you to where you need to be at this moment. Sometimes, you may follow the beaten path and reach a dead end, only to show yourself that you chose it out fear rather than from the heart. But if you take an unfamiliar road while following the call of your heart, you may face fog and uncertainty. Yet with each step, the way will reveal itself to you as if by magic, and your journey will become easier and filled with joy.",
     symbol: "🛤️",
+    image: require('@/../assets/images/road-chapter.png'),
   },
   {
     id: 2,

@@ -370,110 +370,148 @@ function MessageDetailModal({
 
           <ScrollView
             contentContainerStyle={{
-              paddingTop: insets.top + 80,
+              paddingTop: message.image ? 0 : insets.top + 80,
               paddingBottom: insets.bottom + 40,
-              paddingHorizontal: 28,
               flexGrow: 1,
-              justifyContent: 'center',
             }}
             showsVerticalScrollIndicator={false}
           >
-            {/* Symbol with magical aura */}
-            <Animated.View
-              entering={FadeInUp.delay(100).springify()}
-              className="items-center mb-10"
-            >
-              {/* Outer glow ring */}
-              <Animated.View
-                style={[
-                  {
-                    position: 'absolute',
-                    width: 160,
-                    height: 160,
-                    borderRadius: 80,
-                    backgroundColor: 'rgba(80, 200, 120, 0.08)',
-                    shadowColor: '#50c878',
-                    shadowOffset: { width: 0, height: 0 },
-                    shadowOpacity: 0.5,
-                    shadowRadius: 40,
-                  },
-                  glowAnimatedStyle,
-                ]}
-              />
-              <Animated.View
-                style={[
-                  {
-                    width: 120,
-                    height: 120,
-                    borderRadius: 60,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: 'rgba(80, 200, 120, 0.1)',
-                    borderWidth: 2,
-                    borderColor: 'rgba(120, 220, 150, 0.4)',
-                    shadowColor: '#50c878',
-                    shadowOffset: { width: 0, height: 0 },
-                    shadowOpacity: 0.6,
-                    shadowRadius: 20,
-                  },
-                  symbolAnimatedStyle,
-                ]}
-              >
-                <Text className="text-6xl">{message.symbol}</Text>
+            {/* Chapter image if available */}
+            {message.image ? (
+              <Animated.View entering={FadeIn.delay(100)}>
+                <View style={{ height: SCREEN_HEIGHT * 0.4 }}>
+                  <Image
+                    source={message.image}
+                    style={{ width: '100%', height: '100%' }}
+                    contentFit="cover"
+                  />
+                  {/* Gradient overlay on image */}
+                  <LinearGradient
+                    colors={['transparent', 'rgba(5, 15, 10, 0.7)', 'rgba(5, 15, 10, 1)']}
+                    locations={[0.3, 0.7, 1]}
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: '70%',
+                    }}
+                  />
+                  {/* Top vignette */}
+                  <LinearGradient
+                    colors={['rgba(5, 15, 10, 0.5)', 'transparent']}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: 100,
+                    }}
+                  />
+                </View>
               </Animated.View>
-            </Animated.View>
+            ) : (
+              /* Symbol with magical aura for chapters without image */
+              <Animated.View
+                entering={FadeInUp.delay(100).springify()}
+                className="items-center mb-10"
+                style={{ paddingTop: insets.top + 80 }}
+              >
+                {/* Outer glow ring */}
+                <Animated.View
+                  style={[
+                    {
+                      position: 'absolute',
+                      width: 160,
+                      height: 160,
+                      borderRadius: 80,
+                      backgroundColor: 'rgba(80, 200, 120, 0.08)',
+                      shadowColor: '#50c878',
+                      shadowOffset: { width: 0, height: 0 },
+                      shadowOpacity: 0.5,
+                      shadowRadius: 40,
+                    },
+                    glowAnimatedStyle,
+                  ]}
+                />
+                <Animated.View
+                  style={[
+                    {
+                      width: 120,
+                      height: 120,
+                      borderRadius: 60,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: 'rgba(80, 200, 120, 0.1)',
+                      borderWidth: 2,
+                      borderColor: 'rgba(120, 220, 150, 0.4)',
+                      shadowColor: '#50c878',
+                      shadowOffset: { width: 0, height: 0 },
+                      shadowOpacity: 0.6,
+                      shadowRadius: 20,
+                    },
+                    symbolAnimatedStyle,
+                  ]}
+                >
+                  <Text className="text-6xl">{message.symbol}</Text>
+                </Animated.View>
+              </Animated.View>
+            )}
 
-            {/* Title with mystical styling */}
-            <Animated.Text
-              entering={FadeInUp.delay(200).springify()}
-              className="text-3xl font-bold text-center mb-6"
-              style={{
-                color: '#d4f0d4',
-                fontFamily: 'serif',
-                letterSpacing: 1,
-                textShadowColor: 'rgba(80, 200, 120, 0.5)',
-                textShadowOffset: { width: 0, height: 0 },
-                textShadowRadius: 10,
-              }}
-            >
-              {message.title}
-            </Animated.Text>
+            {/* Content container */}
+            <View style={{ paddingHorizontal: 28, marginTop: message.image ? -20 : 0 }}>
+              {/* Title with mystical styling */}
+              <Animated.Text
+                entering={FadeInUp.delay(200).springify()}
+                className="text-3xl font-bold text-center mb-6"
+                style={{
+                  color: '#d4f0d4',
+                  fontFamily: 'serif',
+                  letterSpacing: 1,
+                  textShadowColor: 'rgba(80, 200, 120, 0.5)',
+                  textShadowOffset: { width: 0, height: 0 },
+                  textShadowRadius: 10,
+                }}
+              >
+                {message.title}
+              </Animated.Text>
 
-            {/* Magical divider */}
-            <Animated.View
-              entering={FadeIn.delay(300)}
-              className="flex-row items-center justify-center mb-8"
-            >
-              <View style={{ width: 30, height: 1, backgroundColor: 'rgba(120, 220, 150, 0.3)' }} />
-              <Moon size={16} color="rgba(150, 220, 150, 0.6)" style={{ marginHorizontal: 12 }} />
-              <View style={{ width: 30, height: 1, backgroundColor: 'rgba(120, 220, 150, 0.3)' }} />
-            </Animated.View>
+              {/* Magical divider */}
+              <Animated.View
+                entering={FadeIn.delay(300)}
+                className="flex-row items-center justify-center mb-8"
+              >
+                <View style={{ width: 30, height: 1, backgroundColor: 'rgba(120, 220, 150, 0.3)' }} />
+                <Moon size={16} color="rgba(150, 220, 150, 0.6)" style={{ marginHorizontal: 12 }} />
+                <View style={{ width: 30, height: 1, backgroundColor: 'rgba(120, 220, 150, 0.3)' }} />
+              </Animated.View>
 
-            {/* Message with enchanted typography */}
-            <Animated.Text
-              entering={FadeInUp.delay(350).springify()}
-              className="text-lg text-center"
-              style={{
-                color: 'rgba(200, 230, 200, 0.9)',
-                fontFamily: 'serif',
-                lineHeight: 32,
-                letterSpacing: 0.3,
-              }}
-            >
-              {message.message}
-            </Animated.Text>
+              {/* Message with enchanted typography */}
+              <Animated.Text
+                entering={FadeInUp.delay(350).springify()}
+                className="text-lg text-center"
+                style={{
+                  color: 'rgba(200, 230, 200, 0.9)',
+                  fontFamily: 'serif',
+                  lineHeight: 32,
+                  letterSpacing: 0.3,
+                }}
+              >
+                {message.message}
+              </Animated.Text>
 
-            {/* Bottom mystical decoration */}
-            <Animated.View
-              entering={FadeIn.delay(500)}
-              className="items-center mt-12"
-            >
-              <View className="flex-row items-center">
-                <Star size={12} color="rgba(150, 220, 150, 0.4)" fill="rgba(150, 220, 150, 0.2)" />
-                <Sparkles size={20} color="rgba(150, 220, 150, 0.5)" style={{ marginHorizontal: 16 }} />
-                <Star size={12} color="rgba(150, 220, 150, 0.4)" fill="rgba(150, 220, 150, 0.2)" />
-              </View>
-            </Animated.View>
+              {/* Bottom mystical decoration */}
+              <Animated.View
+                entering={FadeIn.delay(500)}
+                className="items-center mt-12"
+              >
+                <View className="flex-row items-center">
+                  <Star size={12} color="rgba(150, 220, 150, 0.4)" fill="rgba(150, 220, 150, 0.2)" />
+                  <Sparkles size={20} color="rgba(150, 220, 150, 0.5)" style={{ marginHorizontal: 16 }} />
+                  <Star size={12} color="rgba(150, 220, 150, 0.4)" fill="rgba(150, 220, 150, 0.2)" />
+                </View>
+              </Animated.View>
+            </View>
           </ScrollView>
         </LinearGradient>
       </View>

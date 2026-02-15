@@ -32,9 +32,10 @@ export const enchantedMessages: GuidanceMessage[] = [
   },
   {
     id: 4,
-    title: "The Fallen Log",
-    message: "What appears as decay on the forest floor is a nursery of new life. Mushrooms, moss, and seedlings find nourishment in endings. Your setbacks are not failures—they are fertile ground for transformation.",
-    symbol: "🍄",
+    title: "Your Guides",
+    message: "On your journey, you will encounter various guides and signs. Don't miss them - otherwise, you may find yourself wandering the forest and tripping over the same bumps. And even if you miss them and get lost for a while, it's only temporary - meant to grant you the forest's experience. You won't be late for anything. Remember, there is no time in the forest.",
+    symbol: "🧭",
+    image: require('@/../assets/images/your-guides-chapter.png'),
   },
   {
     id: 5,

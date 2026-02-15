@@ -468,7 +468,14 @@ function MessageDetailModal({
             )}
 
             {/* Content container */}
-            <View style={{ paddingHorizontal: 28, marginTop: message.image ? -20 : 0 }}>
+            <View style={{
+              paddingHorizontal: 28,
+              marginTop: message.image ? -20 : 0,
+              ...(message.title === "The Road" || message.title === "The Magic Well" ? {
+                flex: 1,
+                justifyContent: 'center',
+              } : {})
+            }}>
               {/* Title with mystical styling */}
               <Animated.Text
                 entering={FadeInUp.delay(200).springify()}

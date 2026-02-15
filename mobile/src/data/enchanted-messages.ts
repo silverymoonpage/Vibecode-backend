@@ -25,9 +25,10 @@ export const enchantedMessages: GuidanceMessage[] = [
   },
   {
     id: 3,
-    title: "The Firefly's Glow",
-    message: "In the darkest corners of the forest, fireflies illuminate the night—not by conquering the darkness, but by becoming light themselves. You carry within you the spark that others need to see. Shine, even when the world feels dim.",
-    symbol: "✨",
+    title: "The Magic Lake",
+    message: "The magic lake is your intuition. When you immerse yourself in it, you first find silence, and then all the answers. To see the lake in the enchanted forest, you must first stop and look around. It is always near, but you cannot see it not with your eyes - only with your heart, where calm and stillness are reflected. When you dive into the depths and find the answer there, you will feel warmth and a sense of home. But when you rise to the surface again, doubts may chain you. The mind's voice will convince you to follow the established path, for it seems secure and every step predictable, while the unfamiliar path may appear dangerous and winding. But remember: the mind always relies on the known and can take you only to the known - while the mystery of the unknown can take you to the places beyond your imagination.",
+    symbol: "🌊",
+    image: require('@/../assets/images/magic-lake-chapter.png'),
   },
   {
     id: 4,

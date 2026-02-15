@@ -21,7 +21,7 @@ export const enchantedMessages: GuidanceMessage[] = [
     title: "The Magic Well",
     message: "The magic well is your heart where you make a wish and fulfill it for yourself but your wish must be genuine. All you have to do is to listen to your heart and follow its impulses. Only this way, otherwise the magic well will turn into a swamp. False desires will only lead you into the densest part of the forest.",
     symbol: "🪄",
-    image: require('@/../assets/images/magic-well-chapter.png'),
+    image: require('@/../assets/images/magic-well.png'),
   },
   {
     id: 3,

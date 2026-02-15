@@ -45,8 +45,8 @@ export const enchantedMessages: GuidanceMessage[] = [
   },
   {
     id: 6,
-    title: "The Spider's Web",
-    message: "The spider weaves without knowing who will come—yet the web catches what is meant for it. Create without attachment to outcome. Your work has value beyond what you can foresee. Trust the weaving.",
+    title: "Stop",
+    message: "Sometimes you may just want to stop and rest to restore your energy. There is no need to rush anywhere or to think that you might lose something if you take a rest. On the contrary, by doing so you will restore your strength and gain more energy to fulfill your dreams. Don't pursue ideals, don't look at how others do things - instead, always tune in to your inner.",
     symbol: "🕸️",
   },
   {

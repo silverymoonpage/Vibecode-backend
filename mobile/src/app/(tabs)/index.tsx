@@ -220,7 +220,7 @@ function GuidanceCard({
           }}
         >
           <View className="flex-row items-center">
-            {/* Symbol container with mystical glow */}
+            {/* Symbol/Image container with mystical glow */}
             <View
               style={{
                 width: 52,
@@ -236,9 +236,18 @@ function GuidanceCard({
                 shadowOffset: { width: 0, height: 0 },
                 shadowOpacity: 0.4,
                 shadowRadius: 8,
+                overflow: 'hidden',
               }}
             >
-              <Text className="text-2xl">{message.symbol}</Text>
+              {message.image ? (
+                <Image
+                  source={message.image}
+                  style={{ width: 52, height: 52, borderRadius: 26 }}
+                  contentFit="cover"
+                />
+              ) : (
+                <Text className="text-2xl">{message.symbol}</Text>
+              )}
             </View>
             <View className="flex-1">
               <Text

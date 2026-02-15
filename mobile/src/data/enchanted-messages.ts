@@ -51,8 +51,8 @@ export const enchantedMessages: GuidanceMessage[] = [
   },
   {
     id: 7,
-    title: "The Morning Mist",
-    message: "When mist blankets the forest, paths disappear and familiar landmarks fade. Yet the forest remains unchanged beneath the veil. When confusion clouds your vision, remember: clarity will return. Be still. The fog always lifts.",
+    title: "Crossroad",
+    message: "Sometimes two roads appear before us, and we need to choose which one to follow. The truth is, we don't really choose - the right path reveals itself the moment we step ahead. And only after taking the step we realize that we are already walking the road. This is the moment when that very step is taken, this is the very impulse from which the movement began. It happened on its own, because the mind didn't have time to interfere and start making choices, giving reasons for what is better and safer. Whichever path that you choose is the right one for you in that moment; it is only the mind that may argue later that you should have taken another one.",
     symbol: "🌫️",
   },
   {

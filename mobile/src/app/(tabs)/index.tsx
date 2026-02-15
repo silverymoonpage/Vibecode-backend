@@ -388,7 +388,7 @@ function MessageDetailModal({
             {/* Chapter image if available */}
             {message.image ? (
               <Animated.View entering={FadeIn.delay(100)}>
-                <View style={{ height: SCREEN_HEIGHT * 0.4 }}>
+                <View style={{ height: message.title === "The Road" ? SCREEN_HEIGHT : SCREEN_HEIGHT * 0.4 }}>
                   <Image
                     source={message.image}
                     style={{ width: '100%', height: '100%' }}

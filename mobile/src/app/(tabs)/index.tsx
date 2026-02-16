@@ -376,12 +376,12 @@ function MessageDetailModal({
               <Image
                 source={message.image}
                 style={{ width: '100%', height: '100%' }}
-                contentFit="contain"
+                contentFit="cover"
               />
               {/* Gradient overlay on image */}
               <LinearGradient
-                colors={['rgba(5, 15, 10, 0.3)', 'rgba(5, 15, 10, 0.6)', 'rgba(5, 15, 10, 0.9)']}
-                locations={[0.2, 0.5, 0.8]}
+                colors={['rgba(5, 15, 10, 0.4)', 'rgba(5, 15, 10, 0.6)', 'rgba(5, 15, 10, 0.8)']}
+                locations={[0.0, 0.5, 1.0]}
                 style={{
                   position: 'absolute',
                   top: 0,

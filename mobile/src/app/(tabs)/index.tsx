@@ -251,17 +251,10 @@ function GuidanceCard({
             </View>
             <View className="flex-1">
               <Text
-                className="text-lg font-semibold mb-1"
+                className="text-lg font-semibold"
                 style={{ color: '#c8e6c9', fontFamily: 'serif', letterSpacing: 0.3 }}
               >
                 {message.title}
-              </Text>
-              <Text
-                className="text-sm"
-                style={{ color: 'rgba(180, 210, 180, 0.6)' }}
-                numberOfLines={2}
-              >
-                {message.message}
               </Text>
             </View>
             {/* Mystical sparkle indicator */}

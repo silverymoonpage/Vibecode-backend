@@ -376,7 +376,7 @@ function MessageDetailModal({
               <Image
                 source={message.image}
                 style={{ width: '100%', height: '100%' }}
-                contentFit={message.title === "The Magic Well" ? "contain" : "cover"}
+                contentFit="contain"
               />
               {/* Gradient overlay on image */}
               <LinearGradient

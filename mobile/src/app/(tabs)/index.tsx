@@ -370,54 +370,43 @@ function MessageDetailModal({
             </Pressable>
           </Animated.View>
 
+          {/* Chapter image as background if available */}
+          {message.image ? (
+            <Animated.View entering={FadeIn.delay(100)} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+              <Image
+                source={message.image}
+                style={{ width: '100%', height: '100%' }}
+                contentFit="contain"
+              />
+              {/* Gradient overlay on image */}
+              <LinearGradient
+                colors={['rgba(5, 15, 10, 0.3)', 'rgba(5, 15, 10, 0.6)', 'rgba(5, 15, 10, 0.9)']}
+                locations={[0.2, 0.5, 0.8]}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                }}
+              />
+            </Animated.View>
+          ) : null}
+
           <ScrollView
             contentContainerStyle={{
-              paddingTop: message.image ? 0 : insets.top + 80,
+              paddingTop: insets.top + 80,
               paddingBottom: insets.bottom + 40,
               flexGrow: 1,
+              justifyContent: 'center',
             }}
             showsVerticalScrollIndicator={false}
           >
-            {/* Chapter image if available */}
-            {message.image ? (
-              <Animated.View entering={FadeIn.delay(100)}>
-                <View style={{ height: message.title === "The Road" || message.title === "The Magic Well" ? SCREEN_HEIGHT : SCREEN_HEIGHT * 0.4 }}>
-                  <Image
-                    source={message.image}
-                    style={{ width: '100%', height: '100%' }}
-                    contentFit="contain"
-                  />
-                  {/* Gradient overlay on image */}
-                  <LinearGradient
-                    colors={['transparent', 'rgba(5, 15, 10, 0.7)', 'rgba(5, 15, 10, 1)']}
-                    locations={[0.3, 0.7, 1]}
-                    style={{
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      height: '70%',
-                    }}
-                  />
-                  {/* Top vignette */}
-                  <LinearGradient
-                    colors={['rgba(5, 15, 10, 0.5)', 'transparent']}
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: 100,
-                    }}
-                  />
-                </View>
-              </Animated.View>
-            ) : (
+            {!message.image ? (
               /* Symbol with magical aura for chapters without image */
               <Animated.View
                 entering={FadeInUp.delay(100).springify()}
                 className="items-center mb-10"
-                style={{ paddingTop: insets.top + 80 }}
               >
                 {/* Outer glow ring */}
                 <Animated.View
@@ -458,12 +447,11 @@ function MessageDetailModal({
                   <Text className="text-6xl">{message.symbol}</Text>
                 </Animated.View>
               </Animated.View>
-            )}
+            ) : null}
 
             {/* Content container */}
             <View style={{
               paddingHorizontal: 28,
-              marginTop: message.image ? -20 : 0,
               flex: 1,
               justifyContent: 'center',
             }}>

@@ -385,7 +385,7 @@ function MessageDetailModal({
                   <Image
                     source={message.image}
                     style={{ width: '100%', height: '100%' }}
-                    contentFit="cover"
+                    contentFit="contain"
                   />
                   {/* Gradient overlay on image */}
                   <LinearGradient
@@ -566,7 +566,7 @@ export default function EnchantedForestScreen() {
           <Image
             source={require('@/../assets/images/enchanted-forest-cover.png')}
             style={{ width: '100%', height: '100%' }}
-            contentFit="cover"
+            contentFit="contain"
           />
           {/* Mystical gradient overlay */}
           <LinearGradient

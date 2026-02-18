@@ -6,6 +6,7 @@ export interface GuidanceMessage {
   message: string;
   symbol: string;
   image?: ImageSourcePropType;
+  menuImage?: ImageSourcePropType;
 }
 
 export const enchantedMessages: GuidanceMessage[] = [
@@ -22,6 +23,7 @@ export const enchantedMessages: GuidanceMessage[] = [
     message: "The magic well is your heart where you make a wish and fulfill it for yourself but your wish must be genuine. All you have to do is to listen to your heart and follow its impulses. Only this way, otherwise the magic well will turn into a swamp. False desires will only lead you into the densest part of the forest.",
     symbol: "🪄",
     image: require('@/../assets/images/magic-well.png'),
+    menuImage: require('@/../assets/images/magic-well.png'),
   },
   {
     id: 3,
@@ -36,6 +38,7 @@ export const enchantedMessages: GuidanceMessage[] = [
     message: "On your journey, you will encounter various guides and signs. Don't miss them - otherwise, you may find yourself wandering the forest and tripping over the same bumps. And even if you miss them and get lost for a while, it's only temporary - meant to grant you the forest's experience. You won't be late for anything. Remember, there is no time in the forest.",
     symbol: "🧭",
     image: require('@/../assets/images/your-guides-chapter.png'),
+    menuImage: require('@/../assets/images/your-guides-chapter.png'),
   },
   {
     id: 5,

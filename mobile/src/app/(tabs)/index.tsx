@@ -548,11 +548,11 @@ export default function EnchantedForestScreen() {
         contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
       >
         {/* Hero Section with Cover Image */}
-        <View style={{ height: SCREEN_HEIGHT * 0.58 }}>
+        <View style={{ height: SCREEN_HEIGHT }}>
           <Image
             source={require('@/../assets/images/enchanted-forest-cover.png')}
             style={{ width: '100%', height: '100%' }}
-            contentFit="contain"
+            contentFit="cover"
           />
           {/* Mystical gradient overlay */}
           <LinearGradient

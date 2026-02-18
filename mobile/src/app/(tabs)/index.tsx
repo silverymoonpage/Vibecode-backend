@@ -376,7 +376,7 @@ function MessageDetailModal({
               <Image
                 source={message.image}
                 style={{ width: '100%', height: '100%' }}
-                contentFit="contain"
+                contentFit="cover"
               />
               {/* Gradient overlay on image */}
               <LinearGradient

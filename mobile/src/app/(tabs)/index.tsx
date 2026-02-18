@@ -239,9 +239,9 @@ function GuidanceCard({
                 overflow: 'hidden',
               }}
             >
-              {message.image ? (
+              {message.menuImage || message.image ? (
                 <Image
-                  source={message.image}
+                  source={message.menuImage || message.image}
                   style={{ width: 52, height: 52, borderRadius: 26 }}
                   contentFit="cover"
                 />

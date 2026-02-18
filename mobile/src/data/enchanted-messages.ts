@@ -46,12 +46,16 @@ export const enchantedMessages: GuidanceMessage[] = [
     title: "Invisible to the Eyes",
     message: "When you follow the heart's path, everything around you starts to glow, even if you don't see it yet. Remember: just because you cannot see something doesn't mean it doesn't exist. The forest has its own laws, and in time, everything will fall into place. Don't rush things. Don't rush yourself. Let go of control. All your wishes will come true once you are ready. The forest does not punish you - it loves you and cares for you. Trust and continue your journey.",
     symbol: "🌿",
+    image: require('@/../assets/images/invisible-to-the-eyes.png'),
+    menuImage: require('@/../assets/images/invisible-to-the-eyes.png'),
   },
   {
     id: 6,
     title: "Stop",
     message: "Sometimes you may just want to stop and rest to restore your energy. There is no need to rush anywhere or to think that you might lose something if you take a rest. On the contrary, by doing so you will restore your strength and gain more energy to fulfill your dreams. Don't pursue ideals, don't look at how others do things - instead, always tune in to your inner.",
     symbol: "🕸️",
+    image: require('@/../assets/images/stop.png'),
+    menuImage: require('@/../assets/images/stop.png'),
   },
   {
     id: 7,

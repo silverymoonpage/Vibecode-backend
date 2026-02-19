@@ -62,12 +62,16 @@ export const enchantedMessages: GuidanceMessage[] = [
     title: "Crossroad",
     message: "Sometimes two roads appear before us, and we need to choose which one to follow. The truth is, we don't really choose - the right path reveals itself the moment we step ahead. And only after taking the step we realize that we are already walking the road. This is the moment when that very step is taken, this is the very impulse from which the movement began. It happened on its own, because the mind didn't have time to interfere and start making choices, giving reasons for what is better and safer. Whichever path that you choose is the right one for you in that moment; it is only the mind that may argue later that you should have taken another one.",
     symbol: "🌫️",
+    image: require('@/../assets/images/crossroad.jpg'),
+    menuImage: require('@/../assets/images/crossroad.jpg'),
   },
   {
     id: 8,
     title: "Swamp",
     message: "It may happen that you feel as if you've fallen into a swamp and cannot find the way out. Don't believe this image, this is just an illusion. The forest is merely playing with you and testing your strength. What should you do to make the illusion dissolve? Just take a bold step forward, trusting your inner compass, and the swamp will vanish as if by magic. Remember, no matter how frightening the outer picture may seem, it is only an illusion created by your fear.",
     symbol: "🦉",
+    image: require('@/../assets/images/swamp.jpg'),
+    menuImage: require('@/../assets/images/swamp.jpg'),
   },
   {
     id: 9,

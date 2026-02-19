@@ -328,27 +328,34 @@ function MessageDetailModal({
       statusBarTranslucent
       onRequestClose={onClose}
     >
-      <View className="flex-1" style={{ backgroundColor: 'rgba(5, 12, 8, 0.98)' }}>
-        <LinearGradient
-          colors={['rgba(10, 30, 20, 1)', 'rgba(5, 15, 10, 1)', 'rgba(2, 8, 5, 1)']}
-          className="flex-1"
-        >
-          {/* Floating particles in modal */}
-          <FloatingParticle delay={0} size={4} left={15} duration={8000} />
-          <FloatingParticle delay={1000} size={3} left={35} duration={10000} />
-          <FloatingParticle delay={2000} size={5} left={55} duration={7000} />
-          <FloatingParticle delay={500} size={3} left={75} duration={9000} />
-          <FloatingParticle delay={1500} size={4} left={85} duration={11000} />
-
-          {/* Background glow orbs */}
-          <GlowingOrb style={{ position: 'absolute', top: '20%', left: -40 }} />
-          <GlowingOrb style={{ position: 'absolute', bottom: '25%', right: -50 }} />
+      {message.image ? (
+        // Full-screen image layout
+        <View style={{ flex: 1, backgroundColor: '#050d08' }}>
+          <Animated.View entering={FadeIn.delay(100)} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }}>
+            <Image
+              source={message.image}
+              style={{ width: '100%', height: '100%' }}
+              contentFit="cover"
+            />
+            {/* Dark overlay for readability */}
+            <LinearGradient
+              colors={['rgba(5, 15, 10, 0.3)', 'rgba(5, 15, 10, 0.5)', 'rgba(5, 15, 10, 0.7)']}
+              locations={[0.0, 0.5, 1.0]}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            />
+          </Animated.View>
 
           {/* Close button */}
           <Animated.View
             entering={FadeIn.delay(200)}
-            style={{ paddingTop: insets.top + 16, paddingRight: 20 }}
-            className="absolute top-0 right-0 z-10"
+            style={{ paddingTop: insets.top + 16, paddingRight: 20, zIndex: 10 }}
+            className="absolute top-0 right-0"
           >
             <Pressable
               onPress={() => {
@@ -370,29 +377,6 @@ function MessageDetailModal({
             </Pressable>
           </Animated.View>
 
-          {/* Chapter image as background if available */}
-          {message.image ? (
-            <Animated.View entering={FadeIn.delay(100)} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
-              <Image
-                source={message.image}
-                style={{ width: '100%', height: '100%' }}
-                contentFit="cover"
-              />
-              {/* Dark overlay for readability */}
-              <LinearGradient
-                colors={['rgba(5, 15, 10, 0.3)', 'rgba(5, 15, 10, 0.5)', 'rgba(5, 15, 10, 0.7)']}
-                locations={[0.0, 0.5, 1.0]}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                }}
-              />
-            </Animated.View>
-          ) : null}
-
           <ScrollView
             contentContainerStyle={{
               paddingTop: insets.top + 80,
@@ -402,53 +386,6 @@ function MessageDetailModal({
             }}
             showsVerticalScrollIndicator={false}
           >
-            {!message.image ? (
-              /* Symbol with magical aura for chapters without image */
-              <Animated.View
-                entering={FadeInUp.delay(100).springify()}
-                className="items-center mb-10"
-              >
-                {/* Outer glow ring */}
-                <Animated.View
-                  style={[
-                    {
-                      position: 'absolute',
-                      width: 160,
-                      height: 160,
-                      borderRadius: 80,
-                      backgroundColor: 'rgba(80, 200, 120, 0.08)',
-                      shadowColor: '#50c878',
-                      shadowOffset: { width: 0, height: 0 },
-                      shadowOpacity: 0.5,
-                      shadowRadius: 40,
-                    },
-                    glowAnimatedStyle,
-                  ]}
-                />
-                <Animated.View
-                  style={[
-                    {
-                      width: 120,
-                      height: 120,
-                      borderRadius: 60,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: 'rgba(80, 200, 120, 0.1)',
-                      borderWidth: 2,
-                      borderColor: 'rgba(120, 220, 150, 0.4)',
-                      shadowColor: '#50c878',
-                      shadowOffset: { width: 0, height: 0 },
-                      shadowOpacity: 0.6,
-                      shadowRadius: 20,
-                    },
-                    symbolAnimatedStyle,
-                  ]}
-                >
-                  <Text className="text-6xl">{message.symbol}</Text>
-                </Animated.View>
-              </Animated.View>
-            ) : null}
-
             {/* Content container */}
             <View style={{
               paddingHorizontal: 28,
@@ -508,8 +445,167 @@ function MessageDetailModal({
               </Animated.View>
             </View>
           </ScrollView>
-        </LinearGradient>
-      </View>
+        </View>
+      ) : (
+        // Fallback layout for chapters without image
+        <View className="flex-1" style={{ backgroundColor: 'rgba(5, 12, 8, 0.98)' }}>
+          <LinearGradient
+            colors={['rgba(10, 30, 20, 1)', 'rgba(5, 15, 10, 1)', 'rgba(2, 8, 5, 1)']}
+            className="flex-1"
+          >
+            {/* Floating particles in modal */}
+            <FloatingParticle delay={0} size={4} left={15} duration={8000} />
+            <FloatingParticle delay={1000} size={3} left={35} duration={10000} />
+            <FloatingParticle delay={2000} size={5} left={55} duration={7000} />
+            <FloatingParticle delay={500} size={3} left={75} duration={9000} />
+            <FloatingParticle delay={1500} size={4} left={85} duration={11000} />
+
+            {/* Background glow orbs */}
+            <GlowingOrb style={{ position: 'absolute', top: '20%', left: -40 }} />
+            <GlowingOrb style={{ position: 'absolute', bottom: '25%', right: -50 }} />
+
+            {/* Close button */}
+            <Animated.View
+              entering={FadeIn.delay(200)}
+              style={{ paddingTop: insets.top + 16, paddingRight: 20 }}
+              className="absolute top-0 right-0 z-10"
+            >
+              <Pressable
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  onClose();
+                }}
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 22,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: 'rgba(80, 200, 120, 0.15)',
+                  borderWidth: 1,
+                  borderColor: 'rgba(80, 200, 120, 0.3)',
+                }}
+              >
+                <X size={20} color="#a8d4a0" />
+              </Pressable>
+            </Animated.View>
+
+            <ScrollView
+              contentContainerStyle={{
+                paddingTop: insets.top + 80,
+                paddingBottom: insets.bottom + 40,
+                flexGrow: 1,
+                justifyContent: 'center',
+              }}
+              showsVerticalScrollIndicator={false}
+            >
+              {/* Symbol with magical aura for chapters without image */}
+              <Animated.View
+                entering={FadeInUp.delay(100).springify()}
+                className="items-center mb-10"
+              >
+                {/* Outer glow ring */}
+                <Animated.View
+                  style={[
+                    {
+                      position: 'absolute',
+                      width: 160,
+                      height: 160,
+                      borderRadius: 80,
+                      backgroundColor: 'rgba(80, 200, 120, 0.08)',
+                      shadowColor: '#50c878',
+                      shadowOffset: { width: 0, height: 0 },
+                      shadowOpacity: 0.5,
+                      shadowRadius: 40,
+                    },
+                    glowAnimatedStyle,
+                  ]}
+                />
+                <Animated.View
+                  style={[
+                    {
+                      width: 120,
+                      height: 120,
+                      borderRadius: 60,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: 'rgba(80, 200, 120, 0.1)',
+                      borderWidth: 2,
+                      borderColor: 'rgba(120, 220, 150, 0.4)',
+                      shadowColor: '#50c878',
+                      shadowOffset: { width: 0, height: 0 },
+                      shadowOpacity: 0.6,
+                      shadowRadius: 20,
+                    },
+                    symbolAnimatedStyle,
+                  ]}
+                >
+                  <Text className="text-6xl">{message.symbol}</Text>
+                </Animated.View>
+              </Animated.View>
+
+              {/* Content container */}
+              <View style={{
+                paddingHorizontal: 28,
+                flex: 1,
+                justifyContent: 'center',
+              }}>
+                {/* Title with mystical styling */}
+                <Animated.Text
+                  entering={FadeInUp.delay(200).springify()}
+                  className="text-3xl font-bold text-center mb-6"
+                  style={{
+                    color: '#d4f0d4',
+                    fontFamily: 'serif',
+                    letterSpacing: 1,
+                    textShadowColor: 'rgba(80, 200, 120, 0.5)',
+                    textShadowOffset: { width: 0, height: 0 },
+                    textShadowRadius: 10,
+                  }}
+                >
+                  {message.title}
+                </Animated.Text>
+
+                {/* Magical divider */}
+                <Animated.View
+                  entering={FadeIn.delay(300)}
+                  className="flex-row items-center justify-center mb-8"
+                >
+                  <View style={{ width: 30, height: 1, backgroundColor: 'rgba(120, 220, 150, 0.3)' }} />
+                  <Moon size={16} color="rgba(150, 220, 150, 0.6)" style={{ marginHorizontal: 12 }} />
+                  <View style={{ width: 30, height: 1, backgroundColor: 'rgba(120, 220, 150, 0.3)' }} />
+                </Animated.View>
+
+                {/* Message with enchanted typography */}
+                <Animated.Text
+                  entering={FadeInUp.delay(350).springify()}
+                  className="text-lg text-center"
+                  style={{
+                    color: 'rgba(200, 230, 200, 0.9)',
+                    fontFamily: 'serif',
+                    lineHeight: 32,
+                    letterSpacing: 0.3,
+                  }}
+                >
+                  {message.message}
+                </Animated.Text>
+
+                {/* Bottom mystical decoration */}
+                <Animated.View
+                  entering={FadeIn.delay(500)}
+                  className="items-center mt-12"
+                >
+                  <View className="flex-row items-center">
+                    <Star size={12} color="rgba(150, 220, 150, 0.4)" fill="rgba(150, 220, 150, 0.2)" />
+                    <Sparkles size={20} color="rgba(150, 220, 150, 0.5)" style={{ marginHorizontal: 16 }} />
+                    <Star size={12} color="rgba(150, 220, 150, 0.4)" fill="rgba(150, 220, 150, 0.2)" />
+                  </View>
+                </Animated.View>
+              </View>
+            </ScrollView>
+          </LinearGradient>
+        </View>
+      )}
     </Modal>
   );
 }

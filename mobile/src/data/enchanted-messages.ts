@@ -78,11 +78,15 @@ export const enchantedMessages: GuidanceMessage[] = [
     title: "You Are Being Guided",
     message: "Everything around you is woven from who you are and from your faith, because you are the author of this fairy tale; you already know all the roads and paths, and you have also created all the characters who will guide you on this journey. All you have to do is to follow the signs, enjoy the journey, and perceive everything as a fascinating game - then any dead end turns into an opportunity, and every step brings you closer to the fairy tale.",
     symbol: "🦌",
+    image: require('@/../assets/images/you-are-being-guided.jpg'),
+    menuImage: require('@/../assets/images/you-are-being-guided.jpg'),
   },
   {
     id: 10,
     title: "The New Beginning",
     message: "And so you have arrived - at the place you have been walking toward for so long: your dream. And you see that this is not the end of your path, but the beginning of something new, and every step you take, each dream fulfilled becomes part of your story, which you experience with wonder. You realize that in the forest everything is connected: one road leads to another, not to reach a destination, but to discover yourself along the way through this enchanted forest.",
     symbol: "☀️",
+    image: require('@/../assets/images/the-new-beginning.jpg'),
+    menuImage: require('@/../assets/images/the-new-beginning.jpg'),
   },
 ];

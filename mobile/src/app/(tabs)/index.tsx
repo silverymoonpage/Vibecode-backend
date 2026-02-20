@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,10 +7,12 @@ import {
   Dimensions,
   Modal,
   StyleSheet,
+  FlatList,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
 import Animated, {
   FadeIn,
@@ -24,18 +26,28 @@ import Animated, {
   withTiming,
   withDelay,
   Easing,
-  interpolate,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { X, Sparkles, Moon, Star } from 'lucide-react-native';
+import { X, Sparkles, Moon, Star, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { enchantedMessages, type GuidanceMessage } from '@/data/enchanted-messages';
+import { useAmbientSound } from '@/hooks/useAmbientSound';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
+// ---------------------------------------------------------------------------
 // Floating magical particle
-function FloatingParticle({ delay, size, left, duration }: { delay: number; size: number; left: number; duration: number }) {
+// ---------------------------------------------------------------------------
+function FloatingParticle({
+  delay,
+  size,
+  left,
+  duration,
+}: {
+  delay: number;
+  size: number;
+  left: number;
+  duration: number;
+}) {
   const translateY = useSharedValue(0);
   const opacity = useSharedValue(0);
   const scale = useSharedValue(0.5);
@@ -45,7 +57,10 @@ function FloatingParticle({ delay, size, left, duration }: { delay: number; size
       delay,
       withRepeat(
         withSequence(
-          withTiming(-SCREEN_HEIGHT * 0.4, { duration, easing: Easing.inOut(Easing.ease) }),
+          withTiming(-SCREEN_HEIGHT * 0.4, {
+            duration,
+            easing: Easing.inOut(Easing.ease),
+          }),
           withTiming(0, { duration: 0 })
         ),
         -1
@@ -101,7 +116,9 @@ function FloatingParticle({ delay, size, left, duration }: { delay: number; size
   );
 }
 
+// ---------------------------------------------------------------------------
 // Glowing orb component
+// ---------------------------------------------------------------------------
 function GlowingOrb({ style }: { style?: object }) {
   const pulseScale = useSharedValue(1);
   const pulseOpacity = useSharedValue(0.4);
@@ -148,6 +165,9 @@ function GlowingOrb({ style }: { style?: object }) {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Guidance card on the main list
+// ---------------------------------------------------------------------------
 function GuidanceCard({
   message,
   index,
@@ -179,13 +199,15 @@ function GuidanceCard({
   };
 
   return (
-    <AnimatedPressable
+    <Animated.View
       entering={FadeInDown.delay(100 + index * 80).springify()}
       style={animatedStyle}
+      className="mb-4"
+    >
+    <Pressable
       onPress={onPress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
-      className="mb-4"
     >
       <View className="relative">
         {/* Magical glow effect on press */}
@@ -252,7 +274,11 @@ function GuidanceCard({
             <View className="flex-1">
               <Text
                 className="text-lg font-semibold"
-                style={{ color: '#c8e6c9', fontFamily: 'serif', letterSpacing: 0.3 }}
+                style={{
+                  color: '#c8e6c9',
+                  fontFamily: 'serif',
+                  letterSpacing: 0.3,
+                }}
               >
                 {message.title}
               </Text>
@@ -269,56 +295,411 @@ function GuidanceCard({
                 backgroundColor: 'rgba(80, 200, 120, 0.1)',
               }}
             >
-              <Star size={14} color="rgba(150, 220, 150, 0.7)" fill="rgba(150, 220, 150, 0.3)" />
+              <Star
+                size={14}
+                color="rgba(150, 220, 150, 0.7)"
+                fill="rgba(150, 220, 150, 0.3)"
+              />
             </View>
           </View>
         </LinearGradient>
       </View>
-    </AnimatedPressable>
+    </Pressable>
+    </Animated.View>
   );
 }
 
-function MessageDetailModal({
-  message,
+// ---------------------------------------------------------------------------
+// Single chapter page rendered inside the FlatList
+// ---------------------------------------------------------------------------
+function ChapterPage({ message }: { message: GuidanceMessage }) {
+  const insets = useSafeAreaInsets();
+
+  if (message.image) {
+    return (
+      <View style={{ width: SCREEN_WIDTH, flex: 1, backgroundColor: '#050d08' }}>
+        {/* Full-screen background image */}
+        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }}>
+          <Image
+            source={message.image}
+            style={{ width: '100%', height: '100%' }}
+            contentFit="cover"
+          />
+          {/* Dark overlay for readability */}
+          <LinearGradient
+            colors={[
+              'rgba(5, 15, 10, 0.3)',
+              'rgba(5, 15, 10, 0.5)',
+              'rgba(5, 15, 10, 0.7)',
+            ]}
+            locations={[0.0, 0.5, 1.0]}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+          />
+        </View>
+
+        <ScrollView
+          contentContainerStyle={{
+            paddingTop: insets.top + 80,
+            paddingBottom: insets.bottom + 80,
+            flexGrow: 1,
+            justifyContent: 'center',
+          }}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={{ paddingHorizontal: 28, flex: 1, justifyContent: 'center' }}>
+            {/* Title */}
+            <Text
+              className="text-3xl font-bold text-center mb-6"
+              style={{
+                color: '#d4f0d4',
+                fontFamily: 'serif',
+                letterSpacing: 1,
+                textShadowColor: 'rgba(80, 200, 120, 0.5)',
+                textShadowOffset: { width: 0, height: 0 },
+                textShadowRadius: 10,
+              }}
+            >
+              {message.title}
+            </Text>
+
+            {/* Magical divider */}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: 32,
+              }}
+            >
+              <View
+                style={{
+                  width: 30,
+                  height: 1,
+                  backgroundColor: 'rgba(120, 220, 150, 0.3)',
+                }}
+              />
+              <Moon
+                size={16}
+                color="rgba(150, 220, 150, 0.6)"
+                style={{ marginHorizontal: 12 }}
+              />
+              <View
+                style={{
+                  width: 30,
+                  height: 1,
+                  backgroundColor: 'rgba(120, 220, 150, 0.3)',
+                }}
+              />
+            </View>
+
+            {/* Message */}
+            <Text
+              className="text-lg text-center"
+              style={{
+                color: 'rgba(200, 230, 200, 0.9)',
+                fontFamily: 'serif',
+                lineHeight: 32,
+                letterSpacing: 0.3,
+              }}
+            >
+              {message.message}
+            </Text>
+
+            {/* Bottom decoration */}
+            <View
+              style={{
+                alignItems: 'center',
+                marginTop: 48,
+              }}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Star
+                  size={12}
+                  color="rgba(150, 220, 150, 0.4)"
+                  fill="rgba(150, 220, 150, 0.2)"
+                />
+                <Sparkles
+                  size={20}
+                  color="rgba(150, 220, 150, 0.5)"
+                  style={{ marginHorizontal: 16 }}
+                />
+                <Star
+                  size={12}
+                  color="rgba(150, 220, 150, 0.4)"
+                  fill="rgba(150, 220, 150, 0.2)"
+                />
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
+
+  // Fallback layout for chapters without image
+  return (
+    <View
+      style={{ width: SCREEN_WIDTH, flex: 1, backgroundColor: 'rgba(5, 12, 8, 0.98)' }}
+    >
+      <LinearGradient
+        colors={['rgba(10, 30, 20, 1)', 'rgba(5, 15, 10, 1)', 'rgba(2, 8, 5, 1)']}
+        style={{ flex: 1 }}
+      >
+        {/* Floating particles */}
+        <FloatingParticle delay={0} size={4} left={15} duration={8000} />
+        <FloatingParticle delay={1000} size={3} left={35} duration={10000} />
+        <FloatingParticle delay={2000} size={5} left={55} duration={7000} />
+        <FloatingParticle delay={500} size={3} left={75} duration={9000} />
+        <FloatingParticle delay={1500} size={4} left={85} duration={11000} />
+
+        {/* Background glow orbs */}
+        <GlowingOrb style={{ position: 'absolute', top: '20%', left: -40 }} />
+        <GlowingOrb style={{ position: 'absolute', bottom: '25%', right: -50 }} />
+
+        <ScrollView
+          contentContainerStyle={{
+            paddingTop: insets.top + 80,
+            paddingBottom: insets.bottom + 80,
+            flexGrow: 1,
+            justifyContent: 'center',
+          }}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Symbol with magical aura */}
+          <View style={{ alignItems: 'center', marginBottom: 40 }}>
+            {/* Outer glow ring */}
+            <View
+              style={{
+                position: 'absolute',
+                width: 160,
+                height: 160,
+                borderRadius: 80,
+                backgroundColor: 'rgba(80, 200, 120, 0.08)',
+                shadowColor: '#50c878',
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.5,
+                shadowRadius: 40,
+              }}
+            />
+            <View
+              style={{
+                width: 120,
+                height: 120,
+                borderRadius: 60,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(80, 200, 120, 0.1)',
+                borderWidth: 2,
+                borderColor: 'rgba(120, 220, 150, 0.4)',
+                shadowColor: '#50c878',
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.6,
+                shadowRadius: 20,
+              }}
+            >
+              <Text className="text-6xl">{message.symbol}</Text>
+            </View>
+          </View>
+
+          {/* Content */}
+          <View style={{ paddingHorizontal: 28, flex: 1, justifyContent: 'center' }}>
+            {/* Title */}
+            <Text
+              className="text-3xl font-bold text-center mb-6"
+              style={{
+                color: '#d4f0d4',
+                fontFamily: 'serif',
+                letterSpacing: 1,
+                textShadowColor: 'rgba(80, 200, 120, 0.5)',
+                textShadowOffset: { width: 0, height: 0 },
+                textShadowRadius: 10,
+              }}
+            >
+              {message.title}
+            </Text>
+
+            {/* Magical divider */}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: 32,
+              }}
+            >
+              <View
+                style={{
+                  width: 30,
+                  height: 1,
+                  backgroundColor: 'rgba(120, 220, 150, 0.3)',
+                }}
+              />
+              <Moon
+                size={16}
+                color="rgba(150, 220, 150, 0.6)"
+                style={{ marginHorizontal: 12 }}
+              />
+              <View
+                style={{
+                  width: 30,
+                  height: 1,
+                  backgroundColor: 'rgba(120, 220, 150, 0.3)',
+                }}
+              />
+            </View>
+
+            {/* Message */}
+            <Text
+              className="text-lg text-center"
+              style={{
+                color: 'rgba(200, 230, 200, 0.9)',
+                fontFamily: 'serif',
+                lineHeight: 32,
+                letterSpacing: 0.3,
+              }}
+            >
+              {message.message}
+            </Text>
+
+            {/* Bottom decoration */}
+            <View style={{ alignItems: 'center', marginTop: 48 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Star
+                  size={12}
+                  color="rgba(150, 220, 150, 0.4)"
+                  fill="rgba(150, 220, 150, 0.2)"
+                />
+                <Sparkles
+                  size={20}
+                  color="rgba(150, 220, 150, 0.5)"
+                  style={{ marginHorizontal: 16 }}
+                />
+                <Star
+                  size={12}
+                  color="rgba(150, 220, 150, 0.4)"
+                  fill="rgba(150, 220, 150, 0.2)"
+                />
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+      </LinearGradient>
+    </View>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Page indicator dots
+// ---------------------------------------------------------------------------
+function PageIndicator({
+  total,
+  current,
+}: {
+  total: number;
+  current: number;
+}) {
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {Array.from({ length: total }).map((_, i) => {
+        const isActive = i === current;
+        return (
+          <View
+            key={i}
+            style={{
+              width: isActive ? 10 : 6,
+              height: isActive ? 10 : 6,
+              borderRadius: isActive ? 5 : 3,
+              backgroundColor: isActive
+                ? '#50c878'
+                : 'rgba(80, 200, 120, 0.3)',
+              marginHorizontal: 3,
+              shadowColor: isActive ? '#50c878' : 'transparent',
+              shadowOffset: { width: 0, height: 0 },
+              shadowOpacity: isActive ? 0.8 : 0,
+              shadowRadius: isActive ? 6 : 0,
+            }}
+          />
+        );
+      })}
+    </View>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Swipeable chapter viewer (replaces the old single-message modal)
+// ---------------------------------------------------------------------------
+function ChapterViewerModal({
+  initialIndex,
   visible,
   onClose,
 }: {
-  message: GuidanceMessage | null;
+  initialIndex: number;
   visible: boolean;
   onClose: () => void;
 }) {
   const insets = useSafeAreaInsets();
-  const symbolScale = useSharedValue(1);
-  const symbolGlow = useSharedValue(0.3);
+  const flatListRef = useRef<FlatList<GuidanceMessage>>(null);
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const hasScrolledToInitial = useRef(false);
 
+  // Ambient forest sound
+  useAmbientSound(visible);
+
+  // When modal opens with a new initialIndex, scroll to it
   useEffect(() => {
     if (visible) {
-      symbolScale.value = withRepeat(
-        withSequence(
-          withTiming(1.08, { duration: 2500, easing: Easing.inOut(Easing.ease) }),
-          withTiming(1, { duration: 2500, easing: Easing.inOut(Easing.ease) })
-        ),
-        -1
-      );
-      symbolGlow.value = withRepeat(
-        withSequence(
-          withTiming(0.7, { duration: 2500 }),
-          withTiming(0.3, { duration: 2500 })
-        ),
-        -1
-      );
+      setCurrentIndex(initialIndex);
+      currentIndexRef.current = initialIndex;
+      hasScrolledToInitial.current = false;
     }
-  }, [visible]);
+  }, [visible, initialIndex]);
 
-  const symbolAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: symbolScale.value }],
-  }));
+  const getItemLayout = useCallback(
+    (_data: ArrayLike<GuidanceMessage> | null | undefined, index: number) => ({
+      length: SCREEN_WIDTH,
+      offset: SCREEN_WIDTH * index,
+      index,
+    }),
+    []
+  );
 
-  const glowAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: symbolGlow.value,
-  }));
+  const currentIndexRef = useRef(initialIndex);
 
-  if (!message) return null;
+  const onMomentumScrollEnd = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const newIndex = Math.round(
+        event.nativeEvent.contentOffset.x / SCREEN_WIDTH
+      );
+      if (newIndex >= 0 && newIndex < enchantedMessages.length && newIndex !== currentIndexRef.current) {
+        currentIndexRef.current = newIndex;
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        setCurrentIndex(newIndex);
+      }
+    },
+    []
+  );
+
+  const renderItem = useCallback(
+    ({ item }: { item: GuidanceMessage }) => <ChapterPage message={item} />,
+    []
+  );
+
+  const keyExtractor = useCallback(
+    (item: GuidanceMessage) => String(item.id),
+    []
+  );
 
   return (
     <Modal
@@ -328,302 +709,148 @@ function MessageDetailModal({
       statusBarTranslucent
       onRequestClose={onClose}
     >
-      {message.image ? (
-        // Full-screen image layout
-        <View style={{ flex: 1, backgroundColor: '#050d08' }}>
-          <Animated.View entering={FadeIn.delay(100)} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }}>
-            <Image
-              source={message.image}
-              style={{ width: '100%', height: '100%' }}
-              contentFit="cover"
-            />
-            {/* Dark overlay for readability */}
-            <LinearGradient
-              colors={['rgba(5, 15, 10, 0.3)', 'rgba(5, 15, 10, 0.5)', 'rgba(5, 15, 10, 0.7)']}
-              locations={[0.0, 0.5, 1.0]}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-              }}
-            />
-          </Animated.View>
-
-          {/* Close button */}
-          <Animated.View
-            entering={FadeIn.delay(200)}
-            style={{ paddingTop: insets.top + 16, paddingRight: 20, zIndex: 10 }}
-            className="absolute top-0 right-0"
-          >
-            <Pressable
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onClose();
-              }}
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 22,
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'rgba(80, 200, 120, 0.15)',
-                borderWidth: 1,
-                borderColor: 'rgba(80, 200, 120, 0.3)',
-              }}
-            >
-              <X size={20} color="#a8d4a0" />
-            </Pressable>
-          </Animated.View>
-
-          <ScrollView
-            contentContainerStyle={{
-              paddingTop: insets.top + 80,
-              paddingBottom: insets.bottom + 40,
-              flexGrow: 1,
-              justifyContent: 'center',
+      <View style={{ flex: 1, backgroundColor: '#050d08' }}>
+        {/* Chapter counter at the top */}
+        <Animated.View
+          entering={FadeIn.delay(200)}
+          style={{
+            position: 'absolute',
+            top: insets.top + 16,
+            left: 0,
+            right: 0,
+            zIndex: 10,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <View
+            style={{
+              paddingHorizontal: 14,
+              paddingVertical: 6,
+              borderRadius: 16,
+              backgroundColor: 'rgba(10, 30, 20, 0.7)',
+              borderWidth: 1,
+              borderColor: 'rgba(80, 200, 120, 0.2)',
             }}
-            showsVerticalScrollIndicator={false}
           >
-            {/* Content container */}
-            <View style={{
-              paddingHorizontal: 28,
-              flex: 1,
-              justifyContent: 'center',
-            }}>
-              {/* Title with mystical styling */}
-              <Animated.Text
-                entering={FadeInUp.delay(200).springify()}
-                className="text-3xl font-bold text-center mb-6"
-                style={{
-                  color: '#d4f0d4',
-                  fontFamily: 'serif',
-                  letterSpacing: 1,
-                  textShadowColor: 'rgba(80, 200, 120, 0.5)',
-                  textShadowOffset: { width: 0, height: 0 },
-                  textShadowRadius: 10,
-                }}
-              >
-                {message.title}
-              </Animated.Text>
-
-              {/* Magical divider */}
-              <Animated.View
-                entering={FadeIn.delay(300)}
-                className="flex-row items-center justify-center mb-8"
-              >
-                <View style={{ width: 30, height: 1, backgroundColor: 'rgba(120, 220, 150, 0.3)' }} />
-                <Moon size={16} color="rgba(150, 220, 150, 0.6)" style={{ marginHorizontal: 12 }} />
-                <View style={{ width: 30, height: 1, backgroundColor: 'rgba(120, 220, 150, 0.3)' }} />
-              </Animated.View>
-
-              {/* Message with enchanted typography */}
-              <Animated.Text
-                entering={FadeInUp.delay(350).springify()}
-                className="text-lg text-center"
-                style={{
-                  color: 'rgba(200, 230, 200, 0.9)',
-                  fontFamily: 'serif',
-                  lineHeight: 32,
-                  letterSpacing: 0.3,
-                }}
-              >
-                {message.message}
-              </Animated.Text>
-
-              {/* Bottom mystical decoration */}
-              <Animated.View
-                entering={FadeIn.delay(500)}
-                className="items-center mt-12"
-              >
-                <View className="flex-row items-center">
-                  <Star size={12} color="rgba(150, 220, 150, 0.4)" fill="rgba(150, 220, 150, 0.2)" />
-                  <Sparkles size={20} color="rgba(150, 220, 150, 0.5)" style={{ marginHorizontal: 16 }} />
-                  <Star size={12} color="rgba(150, 220, 150, 0.4)" fill="rgba(150, 220, 150, 0.2)" />
-                </View>
-              </Animated.View>
-            </View>
-          </ScrollView>
-        </View>
-      ) : (
-        // Fallback layout for chapters without image
-        <View className="flex-1" style={{ backgroundColor: 'rgba(5, 12, 8, 0.98)' }}>
-          <LinearGradient
-            colors={['rgba(10, 30, 20, 1)', 'rgba(5, 15, 10, 1)', 'rgba(2, 8, 5, 1)']}
-            className="flex-1"
-          >
-            {/* Floating particles in modal */}
-            <FloatingParticle delay={0} size={4} left={15} duration={8000} />
-            <FloatingParticle delay={1000} size={3} left={35} duration={10000} />
-            <FloatingParticle delay={2000} size={5} left={55} duration={7000} />
-            <FloatingParticle delay={500} size={3} left={75} duration={9000} />
-            <FloatingParticle delay={1500} size={4} left={85} duration={11000} />
-
-            {/* Background glow orbs */}
-            <GlowingOrb style={{ position: 'absolute', top: '20%', left: -40 }} />
-            <GlowingOrb style={{ position: 'absolute', bottom: '25%', right: -50 }} />
-
-            {/* Close button */}
-            <Animated.View
-              entering={FadeIn.delay(200)}
-              style={{ paddingTop: insets.top + 16, paddingRight: 20 }}
-              className="absolute top-0 right-0 z-10"
-            >
-              <Pressable
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  onClose();
-                }}
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 22,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: 'rgba(80, 200, 120, 0.15)',
-                  borderWidth: 1,
-                  borderColor: 'rgba(80, 200, 120, 0.3)',
-                }}
-              >
-                <X size={20} color="#a8d4a0" />
-              </Pressable>
-            </Animated.View>
-
-            <ScrollView
-              contentContainerStyle={{
-                paddingTop: insets.top + 80,
-                paddingBottom: insets.bottom + 40,
-                flexGrow: 1,
-                justifyContent: 'center',
+            <Text
+              style={{
+                color: 'rgba(180, 230, 180, 0.8)',
+                fontSize: 13,
+                fontFamily: 'serif',
+                letterSpacing: 1,
               }}
-              showsVerticalScrollIndicator={false}
             >
-              {/* Symbol with magical aura for chapters without image */}
-              <Animated.View
-                entering={FadeInUp.delay(100).springify()}
-                className="items-center mb-10"
-              >
-                {/* Outer glow ring */}
-                <Animated.View
-                  style={[
-                    {
-                      position: 'absolute',
-                      width: 160,
-                      height: 160,
-                      borderRadius: 80,
-                      backgroundColor: 'rgba(80, 200, 120, 0.08)',
-                      shadowColor: '#50c878',
-                      shadowOffset: { width: 0, height: 0 },
-                      shadowOpacity: 0.5,
-                      shadowRadius: 40,
-                    },
-                    glowAnimatedStyle,
-                  ]}
-                />
-                <Animated.View
-                  style={[
-                    {
-                      width: 120,
-                      height: 120,
-                      borderRadius: 60,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: 'rgba(80, 200, 120, 0.1)',
-                      borderWidth: 2,
-                      borderColor: 'rgba(120, 220, 150, 0.4)',
-                      shadowColor: '#50c878',
-                      shadowOffset: { width: 0, height: 0 },
-                      shadowOpacity: 0.6,
-                      shadowRadius: 20,
-                    },
-                    symbolAnimatedStyle,
-                  ]}
-                >
-                  <Text className="text-6xl">{message.symbol}</Text>
-                </Animated.View>
-              </Animated.View>
+              {currentIndex + 1} of {enchantedMessages.length}
+            </Text>
+          </View>
+        </Animated.View>
 
-              {/* Content container */}
-              <View style={{
-                paddingHorizontal: 28,
-                flex: 1,
-                justifyContent: 'center',
-              }}>
-                {/* Title with mystical styling */}
-                <Animated.Text
-                  entering={FadeInUp.delay(200).springify()}
-                  className="text-3xl font-bold text-center mb-6"
-                  style={{
-                    color: '#d4f0d4',
-                    fontFamily: 'serif',
-                    letterSpacing: 1,
-                    textShadowColor: 'rgba(80, 200, 120, 0.5)',
-                    textShadowOffset: { width: 0, height: 0 },
-                    textShadowRadius: 10,
-                  }}
-                >
-                  {message.title}
-                </Animated.Text>
+        {/* Close button */}
+        <Animated.View
+          entering={FadeIn.delay(200)}
+          style={{
+            position: 'absolute',
+            top: insets.top + 16,
+            right: 20,
+            zIndex: 10,
+          }}
+        >
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              onClose();
+            }}
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 22,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'rgba(80, 200, 120, 0.15)',
+              borderWidth: 1,
+              borderColor: 'rgba(80, 200, 120, 0.3)',
+            }}
+          >
+            <X size={20} color="#a8d4a0" />
+          </Pressable>
+        </Animated.View>
 
-                {/* Magical divider */}
-                <Animated.View
-                  entering={FadeIn.delay(300)}
-                  className="flex-row items-center justify-center mb-8"
-                >
-                  <View style={{ width: 30, height: 1, backgroundColor: 'rgba(120, 220, 150, 0.3)' }} />
-                  <Moon size={16} color="rgba(150, 220, 150, 0.6)" style={{ marginHorizontal: 12 }} />
-                  <View style={{ width: 30, height: 1, backgroundColor: 'rgba(120, 220, 150, 0.3)' }} />
-                </Animated.View>
+        {/* Swipeable FlatList of chapters */}
+        <FlatList
+          ref={flatListRef}
+          data={enchantedMessages}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          initialScrollIndex={initialIndex}
+          getItemLayout={getItemLayout}
+          onMomentumScrollEnd={onMomentumScrollEnd}
+          bounces={false}
+          style={{ flex: 1 }}
+        />
 
-                {/* Message with enchanted typography */}
-                <Animated.Text
-                  entering={FadeInUp.delay(350).springify()}
-                  className="text-lg text-center"
-                  style={{
-                    color: 'rgba(200, 230, 200, 0.9)',
-                    fontFamily: 'serif',
-                    lineHeight: 32,
-                    letterSpacing: 0.3,
-                  }}
-                >
-                  {message.message}
-                </Animated.Text>
-
-                {/* Bottom mystical decoration */}
-                <Animated.View
-                  entering={FadeIn.delay(500)}
-                  className="items-center mt-12"
-                >
-                  <View className="flex-row items-center">
-                    <Star size={12} color="rgba(150, 220, 150, 0.4)" fill="rgba(150, 220, 150, 0.2)" />
-                    <Sparkles size={20} color="rgba(150, 220, 150, 0.5)" style={{ marginHorizontal: 16 }} />
-                    <Star size={12} color="rgba(150, 220, 150, 0.4)" fill="rgba(150, 220, 150, 0.2)" />
-                  </View>
-                </Animated.View>
-              </View>
-            </ScrollView>
-          </LinearGradient>
-        </View>
-      )}
+        {/* Bottom page indicator + swipe hint */}
+        <Animated.View
+          entering={FadeIn.delay(400)}
+          style={{
+            position: 'absolute',
+            bottom: insets.bottom + 24,
+            left: 0,
+            right: 0,
+            zIndex: 10,
+            alignItems: 'center',
+          }}
+        >
+          <PageIndicator
+            total={enchantedMessages.length}
+            current={currentIndex}
+          />
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: 10,
+            }}
+          >
+            <ChevronLeft size={12} color="rgba(150, 220, 150, 0.4)" />
+            <Text
+              style={{
+                color: 'rgba(150, 220, 150, 0.4)',
+                fontSize: 11,
+                marginHorizontal: 6,
+                letterSpacing: 0.5,
+              }}
+            >
+              swipe to explore
+            </Text>
+            <ChevronRight size={12} color="rgba(150, 220, 150, 0.4)" />
+          </View>
+        </Animated.View>
+      </View>
     </Modal>
   );
 }
 
+// ---------------------------------------------------------------------------
+// Main screen
+// ---------------------------------------------------------------------------
 export default function EnchantedForestScreen() {
   const insets = useSafeAreaInsets();
-  const [selectedMessage, setSelectedMessage] = useState<GuidanceMessage | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const handleCardPress = useCallback((message: GuidanceMessage) => {
+  const handleCardPress = useCallback((index: number) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    setSelectedMessage(message);
+    setSelectedIndex(index);
     setModalVisible(true);
   }, []);
 
   const handleCloseModal = useCallback(() => {
     setModalVisible(false);
-    setTimeout(() => setSelectedMessage(null), 300);
   }, []);
 
   return (
@@ -766,15 +993,15 @@ export default function EnchantedForestScreen() {
               key={message.id}
               message={message}
               index={index}
-              onPress={() => handleCardPress(message)}
+              onPress={() => handleCardPress(index)}
             />
           ))}
         </View>
       </ScrollView>
 
-      {/* Message Detail Modal */}
-      <MessageDetailModal
-        message={selectedMessage}
+      {/* Swipeable Chapter Viewer Modal */}
+      <ChapterViewerModal
+        initialIndex={selectedIndex}
         visible={modalVisible}
         onClose={handleCloseModal}
       />

@@ -13,14 +13,14 @@ export const enchantedMessages: GuidanceMessage[] = [
   {
     id: 1,
     title: "The Road",
-    message: "The enchanted forest is your life, and only you can find your way through it. Everything begins on the road, and only your heart can be your most reliable compass. Many adventures and unexpected turns lie ahead, but only you can decide whether your journey will be easy or difficult. The forest will offer you many paths - both familiar and unfamiliar and all of them lead you to where you need to be at this moment. Sometimes, you may follow the beaten path and reach a dead end, only to show yourself that you chose it out fear rather than from the heart. But if you take an unfamiliar road while following the call of your heart, you may face fog and uncertainty. Yet with each step, the way will reveal itself to you as if by magic, and your journey will become easier and filled with joy.",
+    message: "The enchanted forest is your life, and only you can find your way through it. Everything begins on the road, and only your heart can be your most reliable compass. Many adventures and unexpected turns lie ahead, but only you can decide whether your journey will be easy or difficult. The forest will offer you many paths - both familiar and unfamiliar, and all of them lead you to where you need to be at this moment. Sometimes, you may follow the beaten path and reach a dead end, only to show yourself that you chose it out of fear rather than from the heart. But if you take an unfamiliar road while following the call of your heart, you may face fog and uncertainty. Yet with each step, the way will reveal itself to you as if by magic, and your journey will become easier and filled with joy.",
     symbol: "🛤️",
     image: require('@/../assets/images/road.png'),
   },
   {
     id: 2,
     title: "The Magic Well",
-    message: "The magic well is your heart where you make a wish and fulfill it for yourself but your wish must be genuine. All you have to do is to listen to your heart and follow its impulses. Only this way, otherwise the magic well will turn into a swamp. False desires will only lead you into the densest part of the forest.",
+    message: "The magic well is your heart where you make a wish and fulfill it for yourself, but your wish must be genuine. All you have to do is to listen to your heart and follow its impulses. Only this way, otherwise the magic well will turn into a swamp. False desires will only lead you into the densest part of the forest.",
     symbol: "🪄",
     image: require('@/../assets/images/magic-well.png'),
     menuImage: require('@/../assets/images/magic-well.png'),
@@ -28,7 +28,7 @@ export const enchantedMessages: GuidanceMessage[] = [
   {
     id: 3,
     title: "The Magic Lake",
-    message: "The magic lake is your intuition. When you immerse yourself in it, you first find silence, and then all the answers. To see the lake in the enchanted forest, you must first stop and look around. It is always near, but you cannot see it not with your eyes - only with your heart, where calm and stillness are reflected. When you dive into the depths and find the answer there, you will feel warmth and a sense of home. But when you rise to the surface again, doubts may chain you. The mind's voice will convince you to follow the established path, for it seems secure and every step predictable, while the unfamiliar path may appear dangerous and winding. But remember: the mind always relies on the known and can take you only to the known - while the mystery of the unknown can take you to the places beyond your imagination.",
+    message: "The magic lake is your intuition. When you immerse yourself in it, you first find silence, and then all the answers. To see the lake in the enchanted forest, you must first stop and look around. It is always near, but you cannot see it with your eyes - only with your heart, where calm and stillness are reflected. When you dive into the depths and find the answer there, you will feel warmth and a sense of home. But when you rise to the surface again, doubts may chain you. The mind's voice will convince you to follow the established path, for it seems secure and every step predictable, while the unfamiliar path may appear dangerous and winding. But remember: the mind always relies on the known and can take you only to the known - while the mystery of the unknown can take you to the places beyond your imagination.",
     symbol: "🌊",
     image: require('@/../assets/images/magic-lake.png'),
     menuImage: require('@/../assets/images/magic-lake.png'),
@@ -52,7 +52,7 @@ export const enchantedMessages: GuidanceMessage[] = [
   {
     id: 6,
     title: "Stop",
-    message: "Sometimes you may just want to stop and rest to restore your energy. There is no need to rush anywhere or to think that you might lose something if you take a rest. On the contrary, by doing so you will restore your strength and gain more energy to fulfill your dreams. Don't pursue ideals, don't look at how others do things - instead, always tune in to your inner.",
+    message: "Sometimes you may just want to stop and rest to restore your energy. There is no need to rush anywhere or to think that you might lose something if you take a rest. On the contrary, by doing so you will restore your strength and gain more energy to fulfill your dreams. Don't pursue ideals, don't look at how others do things - instead, always tune in to your inner self.",
     symbol: "🕸️",
     image: require('@/../assets/images/stop.png'),
     menuImage: require('@/../assets/images/stop.png'),
@@ -60,7 +60,7 @@ export const enchantedMessages: GuidanceMessage[] = [
   {
     id: 7,
     title: "Crossroad",
-    message: "Sometimes two roads appear before us, and we need to choose which one to follow. The truth is, we don't really choose - the right path reveals itself the moment we step ahead. And only after taking the step we realize that we are already walking the road. This is the moment when that very step is taken, this is the very impulse from which the movement began. It happened on its own, because the mind didn't have time to interfere and start making choices, giving reasons for what is better and safer. Whichever path that you choose is the right one for you in that moment; it is only the mind that may argue later that you should have taken another one.",
+    message: "Sometimes two roads appear before us, and we need to choose which one to follow. The truth is, we don't really choose - the right path reveals itself the moment we step ahead. And only after taking the step, we realize that we are already walking the road. This is the moment when that very step is taken, this is the very impulse from which the movement began. It happened on its own, because the mind didn't have time to interfere and start making choices, giving reasons for what is better and safer. Whichever path you choose is the right one for you in that moment; it is only the mind that may argue later that you should have taken another one.",
     symbol: "🌫️",
     image: require('@/../assets/images/crossroad.jpg'),
     menuImage: require('@/../assets/images/crossroad.jpg'),
@@ -68,7 +68,7 @@ export const enchantedMessages: GuidanceMessage[] = [
   {
     id: 8,
     title: "Swamp",
-    message: "It may happen that you feel as if you've fallen into a swamp and cannot find the way out. Don't believe this image, this is just an illusion. The forest is merely playing with you and testing your strength. What should you do to make the illusion dissolve? Just take a bold step forward, trusting your inner compass, and the swamp will vanish as if by magic. Remember, no matter how frightening the outer picture may seem, it is only an illusion created by your fear.",
+    message: "It may happen that you feel as if you've fallen into a swamp and cannot find the way out. Don't believe this image; this is just an illusion. The forest is merely playing with you and testing your strength. What should you do to make the illusion dissolve? Just take a bold step forward, trusting your inner compass, and the swamp will vanish as if by magic. Remember, no matter how frightening the outer picture may seem, it is only an illusion created by your fear.",
     symbol: "🦉",
     image: require('@/../assets/images/swamp.jpg'),
     menuImage: require('@/../assets/images/swamp.jpg'),

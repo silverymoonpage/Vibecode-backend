@@ -1,8 +1,7 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { Audio } from 'expo-av';
+import { Audio, AVPlaybackSource } from 'expo-av';
 
-const AMBIENT_SOUND_URI =
-  'https://cdn.pixabay.com/audio/2022/01/18/audio_d0ef98b5d0.mp3';
+const AMBIENT_SOUND_SOURCE: AVPlaybackSource = require('../../assets/audio/forest-ambience.mp3');
 
 const TARGET_VOLUME = 0.3;
 const FADE_STEP = 0.05;
@@ -99,7 +98,7 @@ export function useAmbientSound(playing: boolean) {
           }
 
           const { sound } = await Audio.Sound.createAsync(
-            { uri: AMBIENT_SOUND_URI },
+            AMBIENT_SOUND_SOURCE,
             {
               isLooping: true,
               volume: TARGET_VOLUME,

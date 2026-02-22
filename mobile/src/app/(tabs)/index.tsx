@@ -16,11 +16,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import Animated, {
   FadeIn,
-  FadeInDown,
   FadeInUp,
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
   withRepeat,
   withSequence,
   withTiming,
@@ -31,6 +29,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { X, Sparkles, Moon, Star, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { enchantedMessages, type GuidanceMessage } from '@/data/enchanted-messages';
 import { useAmbientSound } from '@/hooks/useAmbientSound';
+import { ForestMap } from '@/components/ForestMap';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -162,150 +161,6 @@ function GlowingOrb({ style }: { style?: object }) {
         animatedStyle,
       ]}
     />
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Guidance card on the main list
-// ---------------------------------------------------------------------------
-function GuidanceCard({
-  message,
-  index,
-  onPress,
-}: {
-  message: GuidanceMessage;
-  index: number;
-  onPress: () => void;
-}) {
-  const scale = useSharedValue(1);
-  const glowOpacity = useSharedValue(0);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
-
-  const glowStyle = useAnimatedStyle(() => ({
-    opacity: glowOpacity.value,
-  }));
-
-  const handlePressIn = () => {
-    scale.value = withSpring(0.97, { damping: 15 });
-    glowOpacity.value = withTiming(1, { duration: 200 });
-  };
-
-  const handlePressOut = () => {
-    scale.value = withSpring(1, { damping: 15 });
-    glowOpacity.value = withTiming(0, { duration: 300 });
-  };
-
-  return (
-    <Animated.View
-      entering={FadeInDown.delay(100 + index * 80).springify()}
-      style={animatedStyle}
-      className="mb-4"
-    >
-    <Pressable
-      onPress={onPress}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-    >
-      <View className="relative">
-        {/* Magical glow effect on press */}
-        <Animated.View
-          style={[
-            {
-              position: 'absolute',
-              top: -4,
-              left: -4,
-              right: -4,
-              bottom: -4,
-              borderRadius: 20,
-              backgroundColor: 'rgba(80, 200, 120, 0.15)',
-              shadowColor: '#50c878',
-              shadowOffset: { width: 0, height: 0 },
-              shadowOpacity: 0.6,
-              shadowRadius: 15,
-            },
-            glowStyle,
-          ]}
-        />
-        <LinearGradient
-          colors={['rgba(15, 35, 25, 0.95)', 'rgba(10, 25, 18, 0.98)']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={{
-            paddingHorizontal: 18,
-            paddingVertical: 16,
-            borderRadius: 16,
-            borderWidth: 1,
-            borderColor: 'rgba(80, 200, 120, 0.25)',
-          }}
-        >
-          <View className="flex-row items-center">
-            {/* Symbol/Image container with mystical glow */}
-            <View
-              style={{
-                width: 52,
-                height: 52,
-                borderRadius: 26,
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginRight: 14,
-                backgroundColor: 'rgba(80, 200, 120, 0.12)',
-                borderWidth: 1,
-                borderColor: 'rgba(120, 220, 150, 0.3)',
-                shadowColor: '#50c878',
-                shadowOffset: { width: 0, height: 0 },
-                shadowOpacity: 0.4,
-                shadowRadius: 8,
-                overflow: 'hidden',
-              }}
-            >
-              {message.menuImage || message.image ? (
-                <Image
-                  source={message.menuImage || message.image}
-                  style={{ width: 52, height: 52, borderRadius: 26 }}
-                  contentFit="cover"
-                />
-              ) : (
-                <Text className="text-2xl">{message.symbol}</Text>
-              )}
-            </View>
-            <View className="flex-1">
-              <Text
-                className="text-lg font-semibold"
-                style={{
-                  color: '#c8e6c9',
-                  fontFamily: 'serif',
-                  letterSpacing: 0.3,
-                }}
-              >
-                {message.title}
-              </Text>
-            </View>
-            {/* Mystical sparkle indicator */}
-            <View
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: 16,
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginLeft: 8,
-                backgroundColor: 'rgba(80, 200, 120, 0.1)',
-              }}
-            >
-              <Star
-                size={14}
-                color="rgba(150, 220, 150, 0.7)"
-                fill="rgba(150, 220, 150, 0.3)"
-              />
-            </View>
-          </View>
-        </LinearGradient>
-      </View>
-    </Pressable>
-    </Animated.View>
   );
 }
 
@@ -955,48 +810,8 @@ export default function EnchantedForestScreen() {
           </View>
         </View>
 
-        {/* Messages List */}
-        <View className="px-4 -mt-2">
-          <Animated.View
-            entering={FadeIn.delay(500)}
-            className="flex-row items-center mb-6"
-          >
-            <View
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 18,
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginRight: 12,
-                backgroundColor: 'rgba(80, 200, 120, 0.12)',
-                borderWidth: 1,
-                borderColor: 'rgba(80, 200, 120, 0.25)',
-                shadowColor: '#50c878',
-                shadowOffset: { width: 0, height: 0 },
-                shadowOpacity: 0.4,
-                shadowRadius: 8,
-              }}
-            >
-              <Moon size={16} color="#78c878" />
-            </View>
-            <Text
-              className="text-sm uppercase tracking-widest"
-              style={{ color: 'rgba(150, 220, 150, 0.7)' }}
-            >
-              Wisdom of the Woods
-            </Text>
-          </Animated.View>
-
-          {enchantedMessages.map((message, index) => (
-            <GuidanceCard
-              key={message.id}
-              message={message}
-              index={index}
-              onPress={() => handleCardPress(index)}
-            />
-          ))}
-        </View>
+        {/* Forest Map Navigation */}
+        <ForestMap onChapterPress={handleCardPress} />
       </ScrollView>
 
       {/* Swipeable Chapter Viewer Modal */}

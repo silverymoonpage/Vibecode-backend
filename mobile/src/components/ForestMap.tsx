@@ -470,12 +470,12 @@ export function ForestMap({ onChapterPress }: ForestMapProps) {
 
   return (
     <View style={{ width: SCREEN_WIDTH, height: MAP_HEIGHT, overflow: 'hidden' }}>
-      {/* Background image anchored to bottom showing forest floor */}
+      {/* Background image showing dark misty forest mid-section, sky hidden */}
       <Image
         source={require('@/../assets/images/map_background.jpg')}
         style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
         contentFit="cover"
-        contentPosition={{ bottom: 0 }}
+        contentPosition={{ top: '60%' }}
       />
 
       {/* Dark overlay for readability */}

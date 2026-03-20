@@ -475,7 +475,7 @@ export function ForestMap({ onChapterPress }: ForestMapProps) {
         source={require('@/../assets/images/map_background.jpg')}
         style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
         contentFit="cover"
-        contentPosition="bottom"
+        contentPosition={{ bottom: 0 }}
       />
 
       {/* Dark overlay for readability */}

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { View, Text, Pressable, Dimensions } from 'react-native';
+import { View, Text, Pressable, Dimensions, ImageBackground } from 'react-native';
 import { Image } from 'expo-image';
 import * as Haptics from 'expo-haptics';
 import Animated, {
@@ -469,7 +469,25 @@ export function ForestMap({ onChapterPress }: ForestMapProps) {
   const decoElements = generateDecoElements(positions);
 
   return (
-      <View style={{ width: SCREEN_WIDTH, height: MAP_HEIGHT }}>
+    <ImageBackground
+      source={require('@/../assets/images/map_background.jpg')}
+      style={{ width: SCREEN_WIDTH, height: MAP_HEIGHT }}
+      imageStyle={{ resizeMode: 'cover' }}
+    >
+      {/* Dark overlay for readability */}
+      <View
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.35)',
+          zIndex: 1,
+        }}
+      />
+
+      <View style={{ width: SCREEN_WIDTH, height: MAP_HEIGHT, position: 'relative', zIndex: 2 }}>
         {/* SVG layer: path + glow */}
         <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
           <Svg width={SCREEN_WIDTH} height={MAP_HEIGHT}>
@@ -587,5 +605,6 @@ export function ForestMap({ onChapterPress }: ForestMapProps) {
           />
         ))}
       </View>
+    </ImageBackground>
   );
 }

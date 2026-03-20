@@ -4,7 +4,7 @@ A guided introspection and wisdom app with a mystical, nature-inspired aesthetic
 
 ## Features
 
-- **Forest Map Navigation** - Interactive winding path map with chapter nodes connected by a glowing SVG trail, replacing the traditional list view. Each chapter appears as a circular landmark with thumbnail, Roman numeral, and title
+- **Forest Map Navigation** - Interactive winding path map with chapter nodes connected by a glowing SVG trail, set against a beautiful enchanted forest background image with a 35% dark overlay for optimal readability. Each chapter appears as a circular landmark with thumbnail, Roman numeral, and title
 - **10 Chapters of Wisdom** - Each chapter uses a forest metaphor (The Road, The Magic Well, The Magic Lake, etc.) to guide users through life's journey
 - **Full-screen immersive chapter images** - 8 of 10 chapters have beautiful full-screen background images
 - **Swipeable chapter viewer** - Swipe left/right between chapters without closing the modal. Includes page indicator dots and chapter counter

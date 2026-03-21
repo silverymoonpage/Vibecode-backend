@@ -469,13 +469,20 @@ export function ForestMap({ onChapterPress }: ForestMapProps) {
   const decoElements = generateDecoElements(positions);
 
   return (
-    <View style={{ width: SCREEN_WIDTH, height: MAP_HEIGHT, overflow: 'hidden' }}>
-      {/* Background image — forest floor anchored at bottom, trees rising up */}
+    <View style={{ width: SCREEN_WIDTH, height: MAP_HEIGHT, overflow: 'hidden', position: 'relative' }}>
+      {/* Background image — forest floor anchored at bottom, ground-level perspective */}
       <Image
-        source={require('@/../assets/images/new_menu_background.jpg')}
-        style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+        source={require('@/../assets/images/moss_nav_background.jpg')}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          minHeight: '100%',
+        }}
         contentFit="cover"
-        contentPosition="bottom"
+        contentPosition="center"
       />
 
       {/* Dark overlay for readability */}

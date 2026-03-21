@@ -723,7 +723,7 @@ export default function EnchantedForestScreen() {
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
+        contentContainerStyle={{ paddingBottom: 0 }}
       >
         {/* Hero Section with Cover Image */}
         <View style={{ height: SCREEN_HEIGHT }}>

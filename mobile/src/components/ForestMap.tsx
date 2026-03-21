@@ -467,9 +467,10 @@ export function ForestMap({ onChapterPress }: ForestMapProps) {
   const pathString = buildPathString(positions);
   const sparkles = generateSparkles(positions);
   const decoElements = generateDecoElements(positions);
+  const containerHeight = Math.max(MAP_HEIGHT, SCREEN_WIDTH * 1.5);
 
   return (
-    <View style={{ width: SCREEN_WIDTH, height: MAP_HEIGHT, overflow: 'hidden', position: 'relative' }}>
+    <View style={{ width: SCREEN_WIDTH, height: containerHeight, overflow: 'hidden', position: 'relative' }}>
       {/* Background image — forest floor anchored at bottom, ground-level perspective */}
       <Image
         source={require('@/../assets/images/moss_nav_background.jpg')}
@@ -477,9 +478,8 @@ export function ForestMap({ onChapterPress }: ForestMapProps) {
           position: 'absolute',
           top: 0,
           left: 0,
-          width: '100%',
-          height: '100%',
-          minHeight: '100%',
+          width: SCREEN_WIDTH,
+          height: containerHeight,
         }}
         contentFit="cover"
         contentPosition="center"
@@ -498,10 +498,10 @@ export function ForestMap({ onChapterPress }: ForestMapProps) {
         }}
       />
 
-      <View style={{ width: SCREEN_WIDTH, height: MAP_HEIGHT, position: 'relative', zIndex: 2 }}>
+      <View style={{ width: SCREEN_WIDTH, height: containerHeight, position: 'relative', zIndex: 2 }}>
         {/* SVG layer: path + glow */}
         <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
-          <Svg width={SCREEN_WIDTH} height={MAP_HEIGHT}>
+          <Svg width={SCREEN_WIDTH} height={containerHeight}>
             <Defs>
               {/* Glow circles for each node */}
               {positions.map((pos, i) => (

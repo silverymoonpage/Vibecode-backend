@@ -473,7 +473,7 @@ export function ForestMap({ onChapterPress }: ForestMapProps) {
     <View style={{ width: SCREEN_WIDTH, height: containerHeight, overflow: 'hidden', position: 'relative' }}>
       {/* Background image — forest floor anchored at bottom, ground-level perspective */}
       <Image
-        source={require('@/../assets/images/moss_nav_background.jpg')}
+        source={require('@/../assets/images/latest-vibecode-new-menu-background.jpg')}
         style={{
           position: 'absolute',
           top: 0,

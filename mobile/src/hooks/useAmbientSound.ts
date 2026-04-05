@@ -9,11 +9,11 @@ const FADE_INTERVAL_MS = 50;
 
 /**
  * Manages an ambient forest sound that plays on loop.
- * - When `playing` is true, loads and plays the sound at moderate volume.
- * - When `playing` becomes false, fades volume to 0 then stops and unloads.
+ * - When `playing` is true and `isMuted` is false, loads and plays the sound at moderate volume.
+ * - When `playing` becomes false or `isMuted` becomes true, fades volume to 0 then stops and unloads.
  * - Cleans up automatically on unmount.
  */
-export function useAmbientSound(playing: boolean) {
+export function useAmbientSound(playing: boolean, isMuted: boolean = false) {
   const soundRef = useRef<Audio.Sound | null>(null);
   const fadeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isMountedRef = useRef(true);
@@ -77,7 +77,7 @@ export function useAmbientSound(playing: boolean) {
   }, []);
 
   useEffect(() => {
-    if (playing) {
+    if (playing && !isMuted) {
       let cancelled = false;
 
       const startSound = async () => {
@@ -135,7 +135,7 @@ export function useAmbientSound(playing: boolean) {
       // playing became false -- fade out
       fadeOutAndStop();
     }
-  }, [playing, fadeOutAndStop]);
+  }, [playing, isMuted, fadeOutAndStop]);
 
   // Cleanup on unmount
   useEffect(() => {

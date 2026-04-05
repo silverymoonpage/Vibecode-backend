@@ -30,6 +30,8 @@ import { X, Sparkles, Moon, Star, ChevronLeft, ChevronRight } from 'lucide-react
 import { enchantedMessages, type GuidanceMessage } from '@/data/enchanted-messages';
 import { useAmbientSound } from '@/hooks/useAmbientSound';
 import { ForestMap } from '@/components/ForestMap';
+import { AudioControlButton } from '@/components/AudioControlButton';
+import useAudioStore from '@/lib/state/audio-store';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -510,7 +512,8 @@ function ChapterViewerModal({
   const hasScrolledToInitial = useRef(false);
 
   // Ambient forest sound
-  useAmbientSound(visible);
+  const isMuted = useAudioStore((s) => s.isMuted);
+  useAmbientSound(visible, isMuted);
 
   // When modal opens with a new initialIndex, scroll to it
   useEffect(() => {
@@ -602,7 +605,7 @@ function ChapterViewerModal({
           </View>
         </Animated.View>
 
-        {/* Close button */}
+        {/* Close button + mute button row */}
         <Animated.View
           entering={FadeIn.delay(200)}
           style={{
@@ -610,8 +613,14 @@ function ChapterViewerModal({
             top: insets.top + 16,
             right: 20,
             zIndex: 10,
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 8,
           }}
         >
+          {/* Mute toggle */}
+          <AudioControlButton inline />
+          {/* Close */}
           <Pressable
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -820,6 +829,9 @@ export default function EnchantedForestScreen() {
         visible={modalVisible}
         onClose={handleCloseModal}
       />
+
+      {/* Global audio mute/unmute button */}
+      <AudioControlButton />
     </View>
   );
 }

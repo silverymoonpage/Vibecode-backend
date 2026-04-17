@@ -26,7 +26,7 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { X, Sparkles, Moon, Star, ChevronLeft, ChevronRight } from 'lucide-react-native';
+import { X, Sparkles, Moon, Star, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react-native';
 import { enchantedMessages, type GuidanceMessage } from '@/data/enchanted-messages';
 import { useAmbientSound } from '@/hooks/useAmbientSound';
 import { ForestMap } from '@/components/ForestMap';
@@ -705,10 +705,16 @@ function ChapterViewerModal({
 // ---------------------------------------------------------------------------
 export default function EnchantedForestScreen() {
   const insets = useSafeAreaInsets();
+  const scrollViewRef = useRef<ScrollView>(null);
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [paywallVisible, setPaywallVisible] = useState(false);
   const [pendingLockedIndex, setPendingLockedIndex] = useState<number | null>(null);
+
+  const handleBeginJourney = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    scrollViewRef.current?.scrollTo({ y: SCREEN_HEIGHT, animated: true });
+  }, []);
 
   const handleCardPress = useCallback((index: number) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -753,6 +759,7 @@ export default function EnchantedForestScreen() {
       </View>
 
       <ScrollView
+        ref={scrollViewRef}
         className="flex-1"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 0 }}
@@ -839,6 +846,46 @@ export default function EnchantedForestScreen() {
             >
               10 messages of guidance, each a metaphor{'\n'}for life's enchanted pathway
             </Animated.Text>
+
+            {/* Begin Your Journey button */}
+            <Animated.View entering={FadeInUp.delay(520).springify()} style={{ marginTop: 28 }}>
+              <Pressable
+                onPress={handleBeginJourney}
+                style={({ pressed }) => ({
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  alignSelf: 'flex-start',
+                  paddingVertical: 14,
+                  paddingHorizontal: 28,
+                  borderRadius: 32,
+                  borderWidth: 1,
+                  borderColor: pressed ? 'rgba(168, 212, 120, 0.9)' : 'rgba(168, 212, 120, 0.55)',
+                  backgroundColor: pressed ? 'rgba(80, 200, 120, 0.18)' : 'rgba(80, 200, 120, 0.08)',
+                  shadowColor: '#a8d478',
+                  shadowOffset: { width: 0, height: 0 },
+                  shadowOpacity: pressed ? 0.7 : 0.4,
+                  shadowRadius: 16,
+                })}
+              >
+                <Text
+                  style={{
+                    color: '#c8e8a0',
+                    fontSize: 15,
+                    fontFamily: 'serif',
+                    fontWeight: '300',
+                    letterSpacing: 1.5,
+                    marginRight: 8,
+                    textShadowColor: 'rgba(168, 212, 120, 0.6)',
+                    textShadowOffset: { width: 0, height: 0 },
+                    textShadowRadius: 8,
+                  }}
+                >
+                  Begin Your Journey
+                </Text>
+                <ChevronDown size={15} color="rgba(168, 212, 120, 0.8)" />
+              </Pressable>
+            </Animated.View>
           </View>
         </View>
 

@@ -202,7 +202,7 @@ function ChapterPage({ message }: { message: GuidanceMessage }) {
 
         <ScrollView
           contentContainerStyle={{
-            paddingTop: insets.top + 80,
+            paddingTop: insets.top + (message.title === 'The Magic Well' ? 105 : 80),
             paddingBottom: insets.bottom + 80,
             flexGrow: 1,
             justifyContent: 'center',

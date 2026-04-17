@@ -21,7 +21,7 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { X, Sparkles, Lock } from 'lucide-react-native';
+import { Sparkles, Lock } from 'lucide-react-native';
 import usePurchaseStore from '@/lib/state/purchase-store';
 
 const PRODUCT_ID = 'com.enchantedpath.fulljourney';
@@ -230,18 +230,9 @@ export function PaywallModal({
         >
           <Pressable
             onPress={handleClose}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 20,
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'rgba(5, 20, 12, 0.7)',
-              borderWidth: 1,
-              borderColor: 'rgba(80, 200, 120, 0.25)',
-            }}
+            style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 8 })}
           >
-            <X size={18} color="rgba(168, 212, 160, 0.8)" />
+            <Text style={{ color: 'rgba(180, 180, 180, 0.7)', fontSize: 22, lineHeight: 22 }}>×</Text>
           </Pressable>
         </Animated.View>
 
@@ -427,7 +418,7 @@ export function PaywallModal({
                     letterSpacing: 0.3,
                   }}
                 >
-                  Unlock Full Journey {displayPrice}
+                  Unlock Full Journey · {displayPrice}
                 </Text>
               )}
             </Pressable>

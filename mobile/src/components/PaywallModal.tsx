@@ -404,7 +404,7 @@ export function PaywallModal({
                 backgroundColor: pressed ? '#3daa62' : '#50c878',
                 borderRadius: 20,
                 paddingVertical: 18,
-                paddingHorizontal: 24,
+                paddingHorizontal: 16,
                 alignItems: 'center',
                 justifyContent: 'center',
                 shadowColor: '#50c878',
@@ -418,15 +418,16 @@ export function PaywallModal({
                 <ActivityIndicator color="#050d08" size="small" />
               ) : (
                 <Text
+                  numberOfLines={1}
                   style={{
                     color: '#050d08',
-                    fontSize: 17,
+                    fontSize: 18,
                     fontWeight: '700',
                     fontFamily: 'serif',
                     letterSpacing: 0.3,
                   }}
                 >
-                  Unlock Full Journey · {displayPrice}
+                  Unlock Full Journey {displayPrice}
                 </Text>
               )}
             </Pressable>

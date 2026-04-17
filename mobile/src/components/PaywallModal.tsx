@@ -426,7 +426,7 @@ export function PaywallModal({
                     letterSpacing: 0.3,
                   }}
                 >
-                  Unlock the Full Journey — {displayPrice}
+                  Unlock Full Journey · {displayPrice}
                 </Text>
               )}
             </Pressable>

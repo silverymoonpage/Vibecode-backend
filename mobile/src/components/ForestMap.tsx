@@ -14,8 +14,12 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 import Svg, { Path, Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
-import { Sparkles, TreePine, Star } from 'lucide-react-native';
+import { Sparkles, TreePine, Star, Lock } from 'lucide-react-native';
 import { enchantedMessages, type GuidanceMessage } from '@/data/enchanted-messages';
+import usePurchaseStore from '@/lib/state/purchase-store';
+
+// Chapters 0–2 are always free; 3–9 require purchase
+const FREE_CHAPTER_COUNT = 3;
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -215,12 +219,14 @@ function ChapterNode({
   x,
   y,
   onPress,
+  isLocked,
 }: {
   message: GuidanceMessage;
   index: number;
   x: number;
   y: number;
   onPress: () => void;
+  isLocked: boolean;
 }) {
   const scale = useSharedValue(1);
   const glowOpacity = useSharedValue(0.3);
@@ -277,30 +283,32 @@ function ChapterNode({
     >
       <Pressable
         onPress={handlePress}
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
+        onPressIn={isLocked ? undefined : handlePressIn}
+        onPressOut={isLocked ? undefined : handlePressOut}
         style={{ alignItems: 'center' }}
       >
-        <Animated.View style={nodeAnimatedStyle}>
-          {/* Outer glow ring */}
-          <Animated.View
-            style={[
-              {
-                position: 'absolute',
-                top: -12,
-                left: -12,
-                width: NODE_SIZE + 24,
-                height: NODE_SIZE + 24,
-                borderRadius: (NODE_SIZE + 24) / 2,
-                backgroundColor: 'rgba(80, 200, 120, 0.15)',
-                shadowColor: '#50c878',
-                shadowOffset: { width: 0, height: 0 },
-                shadowOpacity: 0.7,
-                shadowRadius: 20,
-              },
-              glowAnimatedStyle,
-            ]}
-          />
+        <Animated.View style={isLocked ? undefined : nodeAnimatedStyle}>
+          {/* Outer glow ring — hidden for locked nodes */}
+          {!isLocked && (
+            <Animated.View
+              style={[
+                {
+                  position: 'absolute',
+                  top: -12,
+                  left: -12,
+                  width: NODE_SIZE + 24,
+                  height: NODE_SIZE + 24,
+                  borderRadius: (NODE_SIZE + 24) / 2,
+                  backgroundColor: 'rgba(80, 200, 120, 0.15)',
+                  shadowColor: '#50c878',
+                  shadowOffset: { width: 0, height: 0 },
+                  shadowOpacity: 0.7,
+                  shadowRadius: 20,
+                },
+                glowAnimatedStyle,
+              ]}
+            />
+          )}
 
           {/* Node circle */}
           <View
@@ -310,11 +318,11 @@ function ChapterNode({
               borderRadius: NODE_SIZE / 2,
               overflow: 'hidden',
               borderWidth: 2,
-              borderColor: 'rgba(80, 200, 120, 0.5)',
+              borderColor: isLocked ? 'rgba(80, 200, 120, 0.2)' : 'rgba(80, 200, 120, 0.5)',
               backgroundColor: '#0a1e12',
               shadowColor: '#50c878',
               shadowOffset: { width: 0, height: 0 },
-              shadowOpacity: 0.5,
+              shadowOpacity: isLocked ? 0.15 : 0.5,
               shadowRadius: 12,
               alignItems: 'center',
               justifyContent: 'center',
@@ -329,6 +337,25 @@ function ChapterNode({
             ) : (
               <Text style={{ fontSize: 28 }}>{message.symbol}</Text>
             )}
+
+            {/* Lock overlay — semi-transparent dark cover + lock icon */}
+            {isLocked ? (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  borderRadius: NODE_SIZE / 2,
+                  backgroundColor: 'rgba(5, 13, 8, 0.55)',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Lock size={22} color="rgba(180, 210, 180, 0.85)" />
+              </View>
+            ) : null}
           </View>
         </Animated.View>
 
@@ -336,7 +363,7 @@ function ChapterNode({
         <Text
           style={{
             marginTop: 8,
-            color: '#50c878',
+            color: isLocked ? 'rgba(80, 200, 120, 0.35)' : '#50c878',
             fontSize: 13,
             fontFamily: 'serif',
             letterSpacing: 2,
@@ -348,7 +375,7 @@ function ChapterNode({
           {ROMAN_NUMERALS[index] ?? String(index + 1)}
         </Text>
 
-        {/* Chapter title */}
+        {/* Chapter title — dimmed when locked */}
         <Text
           className="text-center"
           style={{
@@ -361,6 +388,7 @@ function ChapterNode({
             textShadowColor: 'rgba(0,0,0,0.8)',
             textShadowOffset: { width: 0, height: 1 },
             textShadowRadius: 4,
+            opacity: isLocked ? 0.4 : 1,
           }}
           numberOfLines={2}
         >
@@ -460,9 +488,11 @@ function generateDecoElements(positions: { x: number; y: number }[]) {
 // ---------------------------------------------------------------------------
 interface ForestMapProps {
   onChapterPress: (index: number) => void;
+  onLockedChapterPress: (index: number) => void;
 }
 
-export function ForestMap({ onChapterPress }: ForestMapProps) {
+export function ForestMap({ onChapterPress, onLockedChapterPress }: ForestMapProps) {
+  const isUnlocked = usePurchaseStore((s) => s.isUnlocked);
   const positions = getNodePositions();
   const pathString = buildPathString(positions);
   const sparkles = generateSparkles(positions);
@@ -605,16 +635,20 @@ export function ForestMap({ onChapterPress }: ForestMapProps) {
         </Animated.View>
 
         {/* Chapter nodes */}
-        {enchantedMessages.map((message, index) => (
-          <ChapterNode
-            key={message.id}
-            message={message}
-            index={index}
-            x={positions[index].x}
-            y={positions[index].y}
-            onPress={() => onChapterPress(index)}
-          />
-        ))}
+        {enchantedMessages.map((message, index) => {
+          const locked = !isUnlocked && index >= FREE_CHAPTER_COUNT;
+          return (
+            <ChapterNode
+              key={message.id}
+              message={message}
+              index={index}
+              x={positions[index].x}
+              y={positions[index].y}
+              isLocked={locked}
+              onPress={locked ? () => onLockedChapterPress(index) : () => onChapterPress(index)}
+            />
+          );
+        })}
       </View>
     </View>
   );

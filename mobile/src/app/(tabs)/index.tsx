@@ -32,6 +32,7 @@ import { useAmbientSound } from '@/hooks/useAmbientSound';
 import { ForestMap } from '@/components/ForestMap';
 import { AudioControlButton } from '@/components/AudioControlButton';
 import useAudioStore from '@/lib/state/audio-store';
+import { PaywallModal } from '@/components/PaywallModal';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -706,12 +707,34 @@ export default function EnchantedForestScreen() {
   const insets = useSafeAreaInsets();
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [modalVisible, setModalVisible] = useState(false);
+  const [paywallVisible, setPaywallVisible] = useState(false);
+  const [pendingLockedIndex, setPendingLockedIndex] = useState<number | null>(null);
 
   const handleCardPress = useCallback((index: number) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setSelectedIndex(index);
     setModalVisible(true);
   }, []);
+
+  const handleLockedChapterPress = useCallback((index: number) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setPendingLockedIndex(index);
+    setPaywallVisible(true);
+  }, []);
+
+  const handlePaywallClose = useCallback(() => {
+    setPaywallVisible(false);
+    setPendingLockedIndex(null);
+  }, []);
+
+  const handlePurchaseSuccess = useCallback(() => {
+    setPaywallVisible(false);
+    if (pendingLockedIndex !== null) {
+      setSelectedIndex(pendingLockedIndex);
+      setModalVisible(true);
+      setPendingLockedIndex(null);
+    }
+  }, [pendingLockedIndex]);
 
   const handleCloseModal = useCallback(() => {
     setModalVisible(false);
@@ -820,7 +843,10 @@ export default function EnchantedForestScreen() {
         </View>
 
         {/* Forest Map Navigation */}
-        <ForestMap onChapterPress={handleCardPress} />
+        <ForestMap
+          onChapterPress={handleCardPress}
+          onLockedChapterPress={handleLockedChapterPress}
+        />
       </ScrollView>
 
       {/* Swipeable Chapter Viewer Modal */}
@@ -828,6 +854,13 @@ export default function EnchantedForestScreen() {
         initialIndex={selectedIndex}
         visible={modalVisible}
         onClose={handleCloseModal}
+      />
+
+      {/* Paywall modal */}
+      <PaywallModal
+        visible={paywallVisible}
+        onClose={handlePaywallClose}
+        onPurchaseSuccess={handlePurchaseSuccess}
       />
 
       {/* Global audio mute/unmute button */}

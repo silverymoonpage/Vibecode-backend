@@ -364,7 +364,7 @@ function ChapterNode({
           style={{
             marginTop: 8,
             color: isLocked ? 'rgba(80, 200, 120, 0.35)' : '#50c878',
-            fontSize: 13,
+            fontSize: 19,
             fontFamily: 'serif',
             letterSpacing: 2,
             textShadowColor: 'rgba(80, 200, 120, 0.6)',
@@ -381,7 +381,7 @@ function ChapterNode({
           style={{
             marginTop: 2,
             color: '#c8e6c9',
-            fontSize: 12,
+            fontSize: 18,
             fontFamily: 'serif',
             letterSpacing: 0.5,
             maxWidth: NODE_SIZE + 50,

@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { PrivacyPolicyModal } from './PrivacyPolicyModal';
 import {
   View,
   Text,
@@ -89,6 +90,7 @@ export function PaywallModal({
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+  const [privacyVisible, setPrivacyVisible] = useState(false);
 
   // Fetch real product price on mount
   useEffect(() => {
@@ -461,7 +463,31 @@ export function PaywallModal({
               )}
             </Pressable>
           </Animated.View>
+
+          {/* Privacy Policy link */}
+          <Animated.View
+            entering={FadeInUp.delay(460).springify()}
+            style={{ alignItems: 'center', marginTop: 12 }}
+          >
+            <Pressable
+              onPress={() => setPrivacyVisible(true)}
+              style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1 })}
+            >
+              <Text
+                style={{
+                  color: 'rgba(120,180,120,0.45)',
+                  fontSize: 12,
+                  textDecorationLine: 'underline',
+                  fontFamily: 'serif',
+                }}
+              >
+                Privacy Policy
+              </Text>
+            </Pressable>
+          </Animated.View>
         </View>
+
+        <PrivacyPolicyModal visible={privacyVisible} onClose={() => setPrivacyVisible(false)} />
       </View>
     </Modal>
   );

@@ -10,6 +10,7 @@ import {
   FlatList,
   NativeSyntheticEvent,
   NativeScrollEvent,
+  Platform,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -265,7 +266,7 @@ function ChapterPage({ message }: { message: GuidanceMessage }) {
                 fontSize: message.title === 'Your Guides' ? 15 : 18,
                 lineHeight: message.title === 'Your Guides' ? 26 : 32,
                 letterSpacing: 0.3,
-                marginTop: message.title === 'Your Guides' ? 35 : 0,
+                marginTop: message.title === 'Your Guides' ? (Platform.OS === 'web' ? 35 : 0) : 0,
               }}
             >
               {message.message}

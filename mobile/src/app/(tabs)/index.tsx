@@ -258,12 +258,14 @@ function ChapterPage({ message }: { message: GuidanceMessage }) {
 
             {/* Message */}
             <Text
-              className="text-lg text-center"
+              className="text-center"
               style={{
                 color: 'rgba(200, 230, 200, 0.9)',
                 fontFamily: 'serif',
-                lineHeight: 32,
+                fontSize: message.title === 'Your Guides' ? 15 : 18,
+                lineHeight: message.title === 'Your Guides' ? 26 : 32,
                 letterSpacing: 0.3,
+                marginTop: message.title === 'Your Guides' ? 35 : 0,
               }}
             >
               {message.message}

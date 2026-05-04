@@ -851,42 +851,55 @@ export default function EnchantedForestScreen() {
             </Animated.Text>
 
             {/* Begin Your Journey button */}
-            <Animated.View entering={FadeInUp.delay(520).springify()} style={{ marginTop: 28, alignSelf: 'flex-start' }}>
-              <Pressable
-                onPress={handleBeginJourney}
-                style={({ pressed }) => ({
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  paddingVertical: 14,
-                  paddingHorizontal: 28,
+            <Animated.View
+              entering={FadeInUp.delay(520).springify()}
+              style={{
+                marginTop: 28,
+                alignSelf: 'flex-start',
+                shadowColor: '#a8d478',
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.5,
+                shadowRadius: 16,
+              }}
+            >
+              <View
+                style={{
                   borderRadius: 32,
                   borderWidth: 1.5,
-                  borderColor: pressed ? 'rgba(168, 212, 120, 1)' : 'rgba(168, 212, 120, 0.8)',
-                  backgroundColor: pressed ? 'rgba(80, 200, 120, 0.22)' : 'rgba(20, 60, 35, 0.55)',
-                  shadowColor: '#a8d478',
-                  shadowOffset: { width: 0, height: 0 },
-                  shadowOpacity: pressed ? 0.7 : 0.45,
-                  shadowRadius: 16,
-                })}
+                  borderColor: 'rgba(168, 212, 120, 0.85)',
+                  backgroundColor: 'rgba(20, 60, 35, 0.6)',
+                  overflow: 'hidden',
+                }}
               >
-                <Text
-                  style={{
-                    color: '#c8e8a0',
-                    fontSize: 15,
-                    fontFamily: 'serif',
-                    fontWeight: '300',
-                    letterSpacing: 1.5,
-                    marginRight: 8,
-                    textShadowColor: 'rgba(168, 212, 120, 0.6)',
-                    textShadowOffset: { width: 0, height: 0 },
-                    textShadowRadius: 8,
-                  }}
+                <Pressable
+                  onPress={handleBeginJourney}
+                  style={({ pressed }) => ({
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingVertical: 14,
+                    paddingHorizontal: 28,
+                    backgroundColor: pressed ? 'rgba(80, 200, 120, 0.25)' : 'transparent',
+                  })}
                 >
-                  Begin Your Journey
-                </Text>
-                <ChevronDown size={15} color="rgba(168, 212, 120, 0.8)" />
-              </Pressable>
+                  <Text
+                    style={{
+                      color: '#c8e8a0',
+                      fontSize: 15,
+                      fontFamily: 'serif',
+                      fontWeight: '300',
+                      letterSpacing: 1.5,
+                      marginRight: 8,
+                      textShadowColor: 'rgba(168, 212, 120, 0.6)',
+                      textShadowOffset: { width: 0, height: 0 },
+                      textShadowRadius: 8,
+                    }}
+                  >
+                    Begin Your Journey
+                  </Text>
+                  <ChevronDown size={15} color="rgba(168, 212, 120, 0.8)" />
+                </Pressable>
+              </View>
             </Animated.View>
           </View>
         </View>

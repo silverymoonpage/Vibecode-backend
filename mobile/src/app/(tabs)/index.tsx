@@ -850,23 +850,22 @@ export default function EnchantedForestScreen() {
             </Animated.Text>
 
             {/* Begin Your Journey button */}
-            <Animated.View entering={FadeInUp.delay(520).springify()} style={{ marginTop: 28 }}>
+            <Animated.View entering={FadeInUp.delay(520).springify()} style={{ marginTop: 28, alignSelf: 'flex-start' }}>
               <Pressable
                 onPress={handleBeginJourney}
                 style={({ pressed }) => ({
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  alignSelf: 'flex-start',
                   paddingVertical: 14,
                   paddingHorizontal: 28,
                   borderRadius: 32,
-                  borderWidth: 1,
-                  borderColor: pressed ? 'rgba(168, 212, 120, 0.9)' : 'rgba(168, 212, 120, 0.55)',
-                  backgroundColor: pressed ? 'rgba(80, 200, 120, 0.18)' : 'rgba(80, 200, 120, 0.08)',
+                  borderWidth: 1.5,
+                  borderColor: pressed ? 'rgba(168, 212, 120, 1)' : 'rgba(168, 212, 120, 0.8)',
+                  backgroundColor: pressed ? 'rgba(80, 200, 120, 0.22)' : 'rgba(20, 60, 35, 0.55)',
                   shadowColor: '#a8d478',
                   shadowOffset: { width: 0, height: 0 },
-                  shadowOpacity: pressed ? 0.7 : 0.4,
+                  shadowOpacity: pressed ? 0.7 : 0.45,
                   shadowRadius: 16,
                 })}
               >

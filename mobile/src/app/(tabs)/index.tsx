@@ -876,6 +876,7 @@ export default function EnchantedForestScreen() {
                 <Pressable
                   onPress={handleBeginJourney}
                   style={({ pressed }) => ({
+                    display: 'flex',
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -892,6 +893,7 @@ export default function EnchantedForestScreen() {
                       fontWeight: '300',
                       letterSpacing: 1.5,
                       marginRight: 8,
+                      textAlign: 'center',
                       textShadowColor: 'rgba(168, 212, 120, 0.6)',
                       textShadowOffset: { width: 0, height: 0 },
                       textShadowRadius: 8,

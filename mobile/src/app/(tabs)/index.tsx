@@ -806,7 +806,7 @@ export default function EnchantedForestScreen() {
           <View
             style={{
               position: 'absolute',
-              bottom: 24,
+              bottom: insets.bottom + 24,
               left: 0,
               right: 0,
               paddingHorizontal: 24,

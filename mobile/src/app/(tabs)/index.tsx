@@ -854,8 +854,9 @@ export default function EnchantedForestScreen() {
             <Animated.View
               entering={FadeInUp.delay(520).springify()}
               style={{
-                marginTop: 28,
+                marginTop: 20,
                 alignSelf: 'flex-start',
+                minWidth: 200,
                 shadowColor: '#a8d478',
                 shadowOffset: { width: 0, height: 0 },
                 shadowOpacity: 0.5,
@@ -869,6 +870,7 @@ export default function EnchantedForestScreen() {
                   borderColor: 'rgba(168, 212, 120, 0.85)',
                   backgroundColor: 'rgba(20, 60, 35, 0.6)',
                   overflow: 'hidden',
+                  minWidth: 200,
                 }}
               >
                 <Pressable

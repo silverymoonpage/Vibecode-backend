@@ -885,6 +885,12 @@ export default function EnchantedForestScreen() {
                     backgroundColor: pressed ? 'rgba(80, 200, 120, 0.25)' : 'transparent',
                   })}
                 >
+                  <Sparkles
+                    size={14}
+                    color="rgba(168, 212, 120, 0.9)"
+                    fill="rgba(168, 212, 120, 0.4)"
+                    style={{ marginRight: 10 }}
+                  />
                   <Text
                     style={{
                       color: '#c8e8a0',
@@ -892,7 +898,6 @@ export default function EnchantedForestScreen() {
                       fontFamily: 'serif',
                       fontWeight: '300',
                       letterSpacing: 1.5,
-                      marginRight: 8,
                       textAlign: 'center',
                       textShadowColor: 'rgba(168, 212, 120, 0.6)',
                       textShadowOffset: { width: 0, height: 0 },
@@ -901,7 +906,12 @@ export default function EnchantedForestScreen() {
                   >
                     Begin Your Journey
                   </Text>
-                  <ChevronDown size={15} color="rgba(168, 212, 120, 0.8)" />
+                  <Sparkles
+                    size={14}
+                    color="rgba(168, 212, 120, 0.9)"
+                    fill="rgba(168, 212, 120, 0.4)"
+                    style={{ marginLeft: 10 }}
+                  />
                 </Pressable>
               </View>
             </Animated.View>

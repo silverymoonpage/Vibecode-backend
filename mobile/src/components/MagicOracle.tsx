@@ -542,18 +542,18 @@ export function MagicOracleOverlay({
             zIndex: 5,
           }}
         >
-          {/* Glowing orb above the message */}
+          {/* Crystal bowl above the message — same graphic as the menu button */}
           <Animated.View
             entering={FadeIn.duration(700)}
             style={[
               {
-                width: 110,
-                height: 110,
-                borderRadius: 55,
+                width: 140,
+                height: 140,
+                borderRadius: 70,
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: 'rgba(168, 232, 154, 0.18)',
-                marginBottom: 36,
+                backgroundColor: 'rgba(168, 232, 154, 0.12)',
+                marginBottom: 32,
                 shadowColor: '#a8e89a',
                 shadowOffset: { width: 0, height: 0 },
                 shadowOpacity: 1,
@@ -562,18 +562,7 @@ export function MagicOracleOverlay({
               orbStyle,
             ]}
           >
-            <View
-              style={{
-                width: 64,
-                height: 64,
-                borderRadius: 32,
-                backgroundColor: 'rgba(230, 255, 217, 0.55)',
-                shadowColor: '#e6ffd9',
-                shadowOffset: { width: 0, height: 0 },
-                shadowOpacity: 1,
-                shadowRadius: 18,
-              }}
-            />
+            <CrystalBowlGraphic size={120} />
           </Animated.View>
 
           {/* Decorative top sparkles row */}

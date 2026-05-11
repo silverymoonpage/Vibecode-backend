@@ -829,7 +829,7 @@ export default function EnchantedForestScreen() {
               <Sparkles size={14} color="rgba(150, 220, 150, 0.8)" />
               <Text
                 className="text-xs uppercase tracking-widest ml-2"
-                style={{ color: 'rgba(150, 220, 150, 0.8)' }}
+                style={{ color: 'rgba(150, 220, 150, 0.8)', fontFamily: 'Almendra_400Regular' }}
               >
                 Your Guide Through
               </Text>
@@ -839,7 +839,7 @@ export default function EnchantedForestScreen() {
               className="text-4xl font-bold"
               style={{
                 color: '#d4f0d4',
-                fontFamily: 'serif',
+                fontFamily: 'Almendra_700Bold',
                 lineHeight: 48,
                 textShadowColor: 'rgba(80, 200, 120, 0.4)',
                 textShadowOffset: { width: 0, height: 0 },

@@ -218,7 +218,7 @@ function ChapterPage({ message }: { message: GuidanceMessage }) {
               className="text-3xl font-bold text-center mb-6"
               style={{
                 color: '#d4f0d4',
-                fontFamily: 'serif',
+                fontFamily: 'Almendra_700Bold',
                 letterSpacing: 1,
                 textShadowColor: 'rgba(80, 200, 120, 0.5)',
                 textShadowOffset: { width: 0, height: 0 },
@@ -376,7 +376,7 @@ function ChapterPage({ message }: { message: GuidanceMessage }) {
               className="text-3xl font-bold text-center mb-6"
               style={{
                 color: '#d4f0d4',
-                fontFamily: 'serif',
+                fontFamily: 'Almendra_700Bold',
                 letterSpacing: 1,
                 textShadowColor: 'rgba(80, 200, 120, 0.5)',
                 textShadowOffset: { width: 0, height: 0 },

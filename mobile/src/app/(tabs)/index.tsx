@@ -34,6 +34,7 @@ import { ForestMap } from '@/components/ForestMap';
 import { AudioControlButton } from '@/components/AudioControlButton';
 import useAudioStore from '@/lib/state/audio-store';
 import { PaywallModal } from '@/components/PaywallModal';
+import { CrystalBowlButton, MagicOracleOverlay } from '@/components/MagicOracle';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -713,6 +714,15 @@ export default function EnchantedForestScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [paywallVisible, setPaywallVisible] = useState(false);
   const [pendingLockedIndex, setPendingLockedIndex] = useState<number | null>(null);
+  const [oracleVisible, setOracleVisible] = useState(false);
+
+  const handleOpenOracle = useCallback(() => {
+    setOracleVisible(true);
+  }, []);
+
+  const handleCloseOracle = useCallback(() => {
+    setOracleVisible(false);
+  }, []);
 
   const handleBeginJourney = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -923,6 +933,40 @@ export default function EnchantedForestScreen() {
           onChapterPress={handleCardPress}
           onLockedChapterPress={handleLockedChapterPress}
         />
+
+        {/* Magic Oracle — glowing crystal bowl at the end of the path */}
+        <View
+          style={{
+            alignItems: 'center',
+            paddingTop: 12,
+            paddingBottom: insets.bottom + 48,
+            backgroundColor: '#050d08',
+          }}
+        >
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginBottom: 18,
+            }}
+          >
+            <View style={{ height: 1, width: 50, backgroundColor: 'rgba(244, 233, 168, 0.35)' }} />
+            <Text
+              style={{
+                color: '#e6d49a',
+                fontSize: 11,
+                letterSpacing: 4,
+                marginHorizontal: 12,
+                fontFamily: 'serif',
+                textTransform: 'uppercase',
+              }}
+            >
+              Seek a Sign
+            </Text>
+            <View style={{ height: 1, width: 50, backgroundColor: 'rgba(244, 233, 168, 0.35)' }} />
+          </View>
+          <CrystalBowlButton onPress={handleOpenOracle} />
+        </View>
       </ScrollView>
 
       {/* Swipeable Chapter Viewer Modal */}
@@ -941,6 +985,9 @@ export default function EnchantedForestScreen() {
 
       {/* Global audio mute/unmute button */}
       <AudioControlButton />
+
+      {/* Magic Oracle full-screen overlay */}
+      <MagicOracleOverlay visible={oracleVisible} onClose={handleCloseOracle} />
     </View>
   );
 }

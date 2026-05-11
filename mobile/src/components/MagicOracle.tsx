@@ -542,9 +542,11 @@ export function MagicOracleOverlay({
             zIndex: 5,
           }}
         >
-          {/* Crystal bowl above the message — same graphic as the menu button */}
+          {/* Crystal bowl above the message — same graphic as the menu button,
+              re-animates with every new message */}
           <Animated.View
-            entering={FadeIn.duration(700)}
+            key={`oracle-bowl-${revealKey}`}
+            entering={ZoomIn.duration(700).springify()}
             style={[
               {
                 width: 140,

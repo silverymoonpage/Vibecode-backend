@@ -277,8 +277,8 @@ function ChapterNode({
         left: x - NODE_SIZE / 2,
         top: y - NODE_SIZE / 2,
         alignItems: 'center',
-        width: NODE_SIZE + 60,
-        marginLeft: -30,
+        width: NODE_SIZE + 110,
+        marginLeft: -55,
       }}
     >
       <Pressable
@@ -381,16 +381,18 @@ function ChapterNode({
           style={{
             marginTop: 2,
             color: '#c8e6c9',
-            fontSize: 18,
+            fontSize: 17,
             fontFamily: 'serif',
-            letterSpacing: 0.5,
-            maxWidth: NODE_SIZE + 50,
+            letterSpacing: 0.3,
+            maxWidth: NODE_SIZE + 100,
             textShadowColor: 'rgba(0,0,0,0.8)',
             textShadowOffset: { width: 0, height: 1 },
             textShadowRadius: 4,
             opacity: isLocked ? 0.4 : 1,
           }}
-          numberOfLines={2}
+          numberOfLines={3}
+          adjustsFontSizeToFit
+          minimumFontScale={0.85}
         >
           {message.title}
         </Text>

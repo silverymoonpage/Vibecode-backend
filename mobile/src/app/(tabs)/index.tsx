@@ -957,7 +957,7 @@ export default function EnchantedForestScreen() {
                 fontSize: 11,
                 letterSpacing: 4,
                 marginHorizontal: 12,
-                fontFamily: 'serif',
+                fontFamily: 'Almendra_400Regular',
                 textTransform: 'uppercase',
               }}
             >

@@ -855,6 +855,7 @@ export default function EnchantedForestScreen() {
                 color: 'rgba(180, 220, 180, 0.7)',
                 lineHeight: 24,
                 fontStyle: 'italic',
+                fontFamily: 'YesevaOne_400Regular',
               }}
             >
               10 messages of guidance, each a metaphor{'\n'}for life's enchanted pathway

@@ -382,7 +382,7 @@ function ChapterNode({
             marginTop: 2,
             color: '#c8e6c9',
             fontSize: 17,
-            fontFamily: 'serif',
+            fontFamily: 'Almendra_700Bold',
             letterSpacing: 0.3,
             maxWidth: NODE_SIZE + 100,
             textShadowColor: 'rgba(0,0,0,0.8)',

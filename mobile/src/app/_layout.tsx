@@ -12,6 +12,7 @@ import {
   Almendra_400Regular,
   Almendra_700Bold,
 } from '@expo-google-fonts/almendra';
+import { YesevaOne_400Regular } from '@expo-google-fonts/yeseva-one';
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
@@ -41,6 +42,7 @@ export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     Almendra_400Regular,
     Almendra_700Bold,
+    YesevaOne_400Regular,
   });
 
   useEffect(() => {

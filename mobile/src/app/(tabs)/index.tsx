@@ -905,7 +905,7 @@ export default function EnchantedForestScreen() {
                     style={{
                       color: '#c8e8a0',
                       fontSize: 15,
-                      fontFamily: 'serif',
+                      fontFamily: 'YesevaOne_400Regular',
                       fontWeight: '300',
                       letterSpacing: 1.5,
                       textAlign: 'center',

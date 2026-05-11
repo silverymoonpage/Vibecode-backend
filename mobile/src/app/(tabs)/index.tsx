@@ -263,7 +263,7 @@ function ChapterPage({ message }: { message: GuidanceMessage }) {
               className="text-center"
               style={{
                 color: 'rgba(200, 230, 200, 0.9)',
-                fontFamily: 'serif',
+                fontFamily: 'YesevaOne_400Regular',
                 fontSize: message.title === 'Your Guides' ? 15 : 18,
                 lineHeight: message.title === 'Your Guides' ? 26 : 32,
                 letterSpacing: 0.3,
@@ -421,7 +421,7 @@ function ChapterPage({ message }: { message: GuidanceMessage }) {
               className="text-lg text-center"
               style={{
                 color: 'rgba(200, 230, 200, 0.9)',
-                fontFamily: 'serif',
+                fontFamily: 'YesevaOne_400Regular',
                 lineHeight: 32,
                 letterSpacing: 0.3,
               }}

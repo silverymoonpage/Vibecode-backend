@@ -309,7 +309,7 @@ export function CrystalBowlButton({ onPress }: { onPress: () => void }) {
             marginTop: 8,
             color: '#e6d49a',
             fontSize: 13,
-            fontFamily: 'serif',
+            fontFamily: 'YesevaOne_400Regular',
             letterSpacing: 3,
             textTransform: 'uppercase',
             textShadowColor: 'rgba(244, 233, 168, 0.7)',
@@ -324,7 +324,7 @@ export function CrystalBowlButton({ onPress }: { onPress: () => void }) {
             marginTop: 2,
             color: 'rgba(200, 230, 200, 0.7)',
             fontSize: 12,
-            fontFamily: 'serif',
+            fontFamily: 'YesevaOne_400Regular',
             fontStyle: 'italic',
             letterSpacing: 0.5,
           }}

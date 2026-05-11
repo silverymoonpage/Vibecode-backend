@@ -24,7 +24,7 @@ import Svg, {
   Path,
   Circle,
 } from 'react-native-svg';
-import { X, Sparkles, RefreshCw } from 'lucide-react-native';
+import { X, Sparkles } from 'lucide-react-native';
 import { oracleMessages } from '@/data/oracle-messages';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -700,29 +700,35 @@ export function MagicOracleOverlay({
                 borderColor: 'rgba(244, 233, 168, 0.8)',
                 backgroundColor: 'rgba(20, 60, 35, 0.65)',
                 overflow: 'hidden',
-                minWidth: 220,
+                minWidth: 200,
               }}
             >
               <Pressable
                 onPress={handleAskAgain}
                 style={({ pressed }) => ({
+                  display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'center',
                   paddingVertical: 14,
-                  paddingHorizontal: 30,
+                  paddingHorizontal: 28,
                   backgroundColor: pressed ? 'rgba(168, 212, 120, 0.28)' : 'transparent',
                 })}
               >
-                <RefreshCw size={15} color="#f4e9a8" style={{ marginRight: 10 }} />
+                <Sparkles
+                  size={14}
+                  color="rgba(244, 233, 168, 0.9)"
+                  fill="rgba(244, 233, 168, 0.4)"
+                  style={{ marginRight: 10 }}
+                />
                 <Text
                   style={{
                     color: '#f4e9a8',
                     fontSize: 15,
                     fontFamily: 'serif',
-                    fontWeight: '400',
-                    letterSpacing: 2.5,
-                    textTransform: 'uppercase',
+                    fontWeight: '300',
+                    letterSpacing: 1.5,
+                    textAlign: 'center',
                     textShadowColor: 'rgba(244, 233, 168, 0.7)',
                     textShadowOffset: { width: 0, height: 0 },
                     textShadowRadius: 8,
@@ -730,6 +736,12 @@ export function MagicOracleOverlay({
                 >
                   Ask Again
                 </Text>
+                <Sparkles
+                  size={14}
+                  color="rgba(244, 233, 168, 0.9)"
+                  fill="rgba(244, 233, 168, 0.4)"
+                  style={{ marginLeft: 10 }}
+                />
               </Pressable>
             </View>
           </Animated.View>

@@ -26,6 +26,9 @@ import Svg, {
 } from 'react-native-svg';
 import { X, Sparkles } from 'lucide-react-native';
 import { oracleMessages } from '@/data/oracle-messages';
+import { useAmbientSound } from '@/hooks/useAmbientSound';
+import useAudioStore from '@/lib/state/audio-store';
+import { AudioControlButton } from '@/components/AudioControlButton';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -364,6 +367,10 @@ export function MagicOracleOverlay({
   const [message, setMessage] = useState<string>('');
   const [revealKey, setRevealKey] = useState<number>(0);
 
+  // Ambient music — plays while the Oracle is visible, respects global mute state
+  const isMuted = useAudioStore((s) => s.isMuted);
+  useAmbientSound(visible, isMuted);
+
   // Pick a fresh message every time the overlay opens
   useEffect(() => {
     if (visible) {
@@ -509,6 +516,18 @@ export function MagicOracleOverlay({
             height: 200,
           }}
         />
+
+        {/* Volume / mute toggle */}
+        <View
+          style={{
+            position: 'absolute',
+            top: 58,
+            right: 74,
+            zIndex: 10,
+          }}
+        >
+          <AudioControlButton inline />
+        </View>
 
         {/* Close button */}
         <Pressable

@@ -664,7 +664,7 @@ export function MagicOracleOverlay({
           </Animated.View>
         </View>
 
-        {/* Ask Again button — anchored near the bottom */}
+        {/* Bottom action buttons — anchored near the bottom */}
         <View
           style={{
             position: 'absolute',
@@ -675,6 +675,71 @@ export function MagicOracleOverlay({
             zIndex: 10,
           }}
         >
+          {/* Back to Your Path button */}
+          <Animated.View
+            entering={FadeIn.delay(200).duration(600)}
+            style={{
+              shadowColor: '#a8d478',
+              shadowOffset: { width: 0, height: 0 },
+              shadowOpacity: 0.5,
+              shadowRadius: 18,
+              marginBottom: 14,
+            }}
+          >
+            <View
+              style={{
+                borderRadius: 32,
+                borderWidth: 1.5,
+                borderColor: 'rgba(244, 233, 168, 0.8)',
+                backgroundColor: 'rgba(20, 60, 35, 0.65)',
+                overflow: 'hidden',
+                minWidth: 200,
+              }}
+            >
+              <Pressable
+                onPress={handleClose}
+                style={({ pressed }) => ({
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  paddingVertical: 14,
+                  paddingHorizontal: 28,
+                  backgroundColor: pressed ? 'rgba(168, 212, 120, 0.28)' : 'transparent',
+                })}
+              >
+                <Sparkles
+                  size={14}
+                  color="rgba(244, 233, 168, 0.9)"
+                  fill="rgba(244, 233, 168, 0.4)"
+                  style={{ marginRight: 10 }}
+                />
+                <Text
+                  style={{
+                    color: '#f4e9a8',
+                    fontSize: 15,
+                    fontFamily: 'serif',
+                    fontWeight: '300',
+                    letterSpacing: 1.5,
+                    textAlign: 'center',
+                    textShadowColor: 'rgba(244, 233, 168, 0.7)',
+                    textShadowOffset: { width: 0, height: 0 },
+                    textShadowRadius: 8,
+                  }}
+                >
+                  Back to Your Path
+                </Text>
+                <Sparkles
+                  size={14}
+                  color="rgba(244, 233, 168, 0.9)"
+                  fill="rgba(244, 233, 168, 0.4)"
+                  style={{ marginLeft: 10 }}
+                />
+              </Pressable>
+            </View>
+          </Animated.View>
+
+          {/* Ask Again button */}
           <Animated.View
             entering={FadeIn.delay(250).duration(600)}
             style={{

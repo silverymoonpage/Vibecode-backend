@@ -5,6 +5,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 interface PurchaseStore {
   isUnlocked: boolean;
   setUnlocked: (val: boolean) => void;
+  hasUsedFreeOracle: boolean;
+  setHasUsedFreeOracle: (val: boolean) => void;
 }
 
 const usePurchaseStore = create<PurchaseStore>()(
@@ -12,6 +14,8 @@ const usePurchaseStore = create<PurchaseStore>()(
     (set) => ({
       isUnlocked: false,
       setUnlocked: (val: boolean) => set({ isUnlocked: val }),
+      hasUsedFreeOracle: false,
+      setHasUsedFreeOracle: (val: boolean) => set({ hasUsedFreeOracle: val }),
     }),
     {
       name: "purchase-storage",

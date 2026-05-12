@@ -24,10 +24,11 @@ import Svg, {
   Path,
   Circle,
 } from 'react-native-svg';
-import { X, Sparkles } from 'lucide-react-native';
+import { X, Sparkles, Lock } from 'lucide-react-native';
 import { oracleMessages } from '@/data/oracle-messages';
 import { useAmbientSound } from '@/hooks/useAmbientSound';
 import useAudioStore from '@/lib/state/audio-store';
+import usePurchaseStore from '@/lib/state/purchase-store';
 import { AudioControlButton } from '@/components/AudioControlButton';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -360,22 +361,35 @@ function pickRandomMessage(previous: string | null): string {
 export function MagicOracleOverlay({
   visible,
   onClose,
+  onRequestUnlock,
 }: {
   visible: boolean;
   onClose: () => void;
+  onRequestUnlock: () => void;
 }) {
   const [message, setMessage] = useState<string>('');
   const [revealKey, setRevealKey] = useState<number>(0);
+  const [lockedView, setLockedView] = useState<boolean>(false);
 
   // Ambient music — plays while the Oracle is visible, respects global mute state
   const isMuted = useAudioStore((s) => s.isMuted);
   useAmbientSound(visible, isMuted);
 
-  // Pick a fresh message every time the overlay opens
+  // Decide which view to show every time the overlay opens.
+  // Free users get exactly one message; after that the lock screen takes over.
   useEffect(() => {
     if (visible) {
-      setMessage(pickRandomMessage(null));
-      setRevealKey((k) => k + 1);
+      const state = usePurchaseStore.getState();
+      if (state.isUnlocked || !state.hasUsedFreeOracle) {
+        setLockedView(false);
+        setMessage(pickRandomMessage(null));
+        setRevealKey((k) => k + 1);
+        if (!state.isUnlocked) {
+          state.setHasUsedFreeOracle(true);
+        }
+      } else {
+        setLockedView(true);
+      }
     }
   }, [visible]);
 
@@ -398,9 +412,19 @@ export function MagicOracleOverlay({
 
   const handleAskAgain = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setMessage((prev) => pickRandomMessage(prev));
-    setRevealKey((k) => k + 1);
+    const { isUnlocked: unlocked } = usePurchaseStore.getState();
+    if (unlocked) {
+      setMessage((prev) => pickRandomMessage(prev));
+      setRevealKey((k) => k + 1);
+    } else {
+      setLockedView(true);
+    }
   }, []);
+
+  const handleUnlockPress = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    onRequestUnlock();
+  }, [onRequestUnlock]);
 
   const handleClose = useCallback(() => {
     Haptics.selectionAsync();
@@ -561,126 +585,270 @@ export function MagicOracleOverlay({
             zIndex: 5,
           }}
         >
-          {/* Crystal bowl above the message — same graphic as the menu button,
-              re-animates with every new message */}
-          <Animated.View
-            key={`oracle-bowl-${revealKey}`}
-            entering={ZoomIn.duration(700).springify()}
-            style={[
-              {
-                width: 140,
-                height: 140,
-                borderRadius: 70,
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'rgba(168, 232, 154, 0.12)',
-                marginBottom: 32,
-                shadowColor: '#a8e89a',
-                shadowOffset: { width: 0, height: 0 },
-                shadowOpacity: 1,
-                shadowRadius: 30,
-              },
-              orbStyle,
-            ]}
-          >
-            <CrystalBowlGraphic size={120} />
-          </Animated.View>
+          {lockedView ? (
+            <>
+              {/* Locked crystal bowl with overlaid lock icon */}
+              <Animated.View
+                key={`oracle-lock-${revealKey}`}
+                entering={ZoomIn.duration(700).springify()}
+                style={[
+                  {
+                    width: 140,
+                    height: 140,
+                    borderRadius: 70,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: 'rgba(168, 232, 154, 0.10)',
+                    marginBottom: 32,
+                    borderWidth: 1.5,
+                    borderColor: 'rgba(244, 233, 168, 0.55)',
+                    shadowColor: '#a8e89a',
+                    shadowOffset: { width: 0, height: 0 },
+                    shadowOpacity: 1,
+                    shadowRadius: 24,
+                  },
+                  orbStyle,
+                ]}
+              >
+                <View style={{ opacity: 0.55 }}>
+                  <CrystalBowlGraphic size={120} />
+                </View>
+                <View
+                  style={{
+                    position: 'absolute',
+                    width: 64,
+                    height: 64,
+                    borderRadius: 32,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: 'rgba(10, 25, 16, 0.72)',
+                    borderWidth: 1,
+                    borderColor: 'rgba(244, 233, 168, 0.6)',
+                  }}
+                >
+                  <Lock size={30} color="#f4e9a8" />
+                </View>
+              </Animated.View>
 
-          {/* Decorative top sparkles row */}
-          <Animated.View
-            entering={FadeIn.delay(150).duration(600)}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginBottom: 18,
-            }}
-          >
-            <View
-              style={{
-                height: 1,
-                width: 40,
-                backgroundColor: 'rgba(244, 233, 168, 0.5)',
-              }}
-            />
-            <Sparkles
-              size={16}
-              color="#f4e9a8"
-              fill="rgba(244, 233, 168, 0.4)"
-              style={{ marginHorizontal: 10 }}
-            />
-            <Text
-              style={{
-                color: '#e6d49a',
-                fontSize: 11,
-                letterSpacing: 4,
-                fontFamily: 'serif',
-                textTransform: 'uppercase',
-              }}
-            >
-              The Oracle Speaks
-            </Text>
-            <Sparkles
-              size={16}
-              color="#f4e9a8"
-              fill="rgba(244, 233, 168, 0.4)"
-              style={{ marginHorizontal: 10 }}
-            />
-            <View
-              style={{
-                height: 1,
-                width: 40,
-                backgroundColor: 'rgba(244, 233, 168, 0.5)',
-              }}
-            />
-          </Animated.View>
+              {/* Decorative top sparkles row */}
+              <Animated.View
+                entering={FadeIn.delay(150).duration(600)}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginBottom: 22,
+                }}
+              >
+                <View
+                  style={{
+                    height: 1,
+                    width: 40,
+                    backgroundColor: 'rgba(244, 233, 168, 0.5)',
+                  }}
+                />
+                <Sparkles
+                  size={16}
+                  color="#f4e9a8"
+                  fill="rgba(244, 233, 168, 0.4)"
+                  style={{ marginHorizontal: 10 }}
+                />
+                <Text
+                  style={{
+                    color: '#e6d49a',
+                    fontSize: 11,
+                    letterSpacing: 4,
+                    fontFamily: 'serif',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  The Oracle Rests
+                </Text>
+                <Sparkles
+                  size={16}
+                  color="#f4e9a8"
+                  fill="rgba(244, 233, 168, 0.4)"
+                  style={{ marginHorizontal: 10 }}
+                />
+                <View
+                  style={{
+                    height: 1,
+                    width: 40,
+                    backgroundColor: 'rgba(244, 233, 168, 0.5)',
+                  }}
+                />
+              </Animated.View>
 
-          {/* The message itself — re-enters on every reveal */}
-          <Animated.Text
-            key={`oracle-msg-${revealKey}`}
-            entering={ZoomIn.duration(700).springify()}
-            exiting={FadeOut.duration(200)}
-            style={{
-              color: '#d4f0c8',
-              fontSize: 22,
-              lineHeight: 34,
-              fontFamily: 'serif',
-              fontStyle: 'italic',
-              textAlign: 'center',
-              letterSpacing: 0.4,
-              textShadowColor: 'rgba(168, 232, 154, 0.55)',
-              textShadowOffset: { width: 0, height: 0 },
-              textShadowRadius: 14,
-              paddingHorizontal: 8,
-            }}
-          >
-            “{message}”
-          </Animated.Text>
+              {/* Lock message */}
+              <Animated.Text
+                entering={FadeIn.delay(250).duration(700)}
+                style={{
+                  color: '#d4f0c8',
+                  fontSize: 19,
+                  lineHeight: 30,
+                  fontFamily: 'serif',
+                  fontStyle: 'italic',
+                  textAlign: 'center',
+                  letterSpacing: 0.3,
+                  textShadowColor: 'rgba(168, 232, 154, 0.5)',
+                  textShadowOffset: { width: 0, height: 0 },
+                  textShadowRadius: 14,
+                  paddingHorizontal: 8,
+                }}
+              >
+                The forest has more secrets to share. Unlock unlimited oracle
+                messages to continue your journey.
+              </Animated.Text>
 
-          {/* Decorative divider beneath the message */}
-          <Animated.View
-            entering={FadeIn.delay(300).duration(600)}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginTop: 28,
-            }}
-          >
-            <View style={{ height: 1, width: 60, backgroundColor: 'rgba(168, 212, 120, 0.4)' }} />
-            <View
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: 3,
-                marginHorizontal: 10,
-                backgroundColor: '#f4e9a8',
-                shadowColor: '#f4e9a8',
-                shadowOffset: { width: 0, height: 0 },
-                shadowOpacity: 1,
-                shadowRadius: 8,
-              }}
-            />
-            <View style={{ height: 1, width: 60, backgroundColor: 'rgba(168, 212, 120, 0.4)' }} />
-          </Animated.View>
+              {/* Decorative divider beneath the message */}
+              <Animated.View
+                entering={FadeIn.delay(400).duration(600)}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: 28,
+                }}
+              >
+                <View style={{ height: 1, width: 60, backgroundColor: 'rgba(168, 212, 120, 0.4)' }} />
+                <View
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: 3,
+                    marginHorizontal: 10,
+                    backgroundColor: '#f4e9a8',
+                    shadowColor: '#f4e9a8',
+                    shadowOffset: { width: 0, height: 0 },
+                    shadowOpacity: 1,
+                    shadowRadius: 8,
+                  }}
+                />
+                <View style={{ height: 1, width: 60, backgroundColor: 'rgba(168, 212, 120, 0.4)' }} />
+              </Animated.View>
+            </>
+          ) : (
+            <>
+              {/* Crystal bowl above the message — same graphic as the menu button,
+                  re-animates with every new message */}
+              <Animated.View
+                key={`oracle-bowl-${revealKey}`}
+                entering={ZoomIn.duration(700).springify()}
+                style={[
+                  {
+                    width: 140,
+                    height: 140,
+                    borderRadius: 70,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: 'rgba(168, 232, 154, 0.12)',
+                    marginBottom: 32,
+                    shadowColor: '#a8e89a',
+                    shadowOffset: { width: 0, height: 0 },
+                    shadowOpacity: 1,
+                    shadowRadius: 30,
+                  },
+                  orbStyle,
+                ]}
+              >
+                <CrystalBowlGraphic size={120} />
+              </Animated.View>
+
+              {/* Decorative top sparkles row */}
+              <Animated.View
+                entering={FadeIn.delay(150).duration(600)}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginBottom: 18,
+                }}
+              >
+                <View
+                  style={{
+                    height: 1,
+                    width: 40,
+                    backgroundColor: 'rgba(244, 233, 168, 0.5)',
+                  }}
+                />
+                <Sparkles
+                  size={16}
+                  color="#f4e9a8"
+                  fill="rgba(244, 233, 168, 0.4)"
+                  style={{ marginHorizontal: 10 }}
+                />
+                <Text
+                  style={{
+                    color: '#e6d49a',
+                    fontSize: 11,
+                    letterSpacing: 4,
+                    fontFamily: 'serif',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  The Oracle Speaks
+                </Text>
+                <Sparkles
+                  size={16}
+                  color="#f4e9a8"
+                  fill="rgba(244, 233, 168, 0.4)"
+                  style={{ marginHorizontal: 10 }}
+                />
+                <View
+                  style={{
+                    height: 1,
+                    width: 40,
+                    backgroundColor: 'rgba(244, 233, 168, 0.5)',
+                  }}
+                />
+              </Animated.View>
+
+              {/* The message itself — re-enters on every reveal */}
+              <Animated.Text
+                key={`oracle-msg-${revealKey}`}
+                entering={ZoomIn.duration(700).springify()}
+                exiting={FadeOut.duration(200)}
+                style={{
+                  color: '#d4f0c8',
+                  fontSize: 22,
+                  lineHeight: 34,
+                  fontFamily: 'serif',
+                  fontStyle: 'italic',
+                  textAlign: 'center',
+                  letterSpacing: 0.4,
+                  textShadowColor: 'rgba(168, 232, 154, 0.55)',
+                  textShadowOffset: { width: 0, height: 0 },
+                  textShadowRadius: 14,
+                  paddingHorizontal: 8,
+                }}
+              >
+                “{message}”
+              </Animated.Text>
+
+              {/* Decorative divider beneath the message */}
+              <Animated.View
+                entering={FadeIn.delay(300).duration(600)}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: 28,
+                }}
+              >
+                <View style={{ height: 1, width: 60, backgroundColor: 'rgba(168, 212, 120, 0.4)' }} />
+                <View
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: 3,
+                    marginHorizontal: 10,
+                    backgroundColor: '#f4e9a8',
+                    shadowColor: '#f4e9a8',
+                    shadowOffset: { width: 0, height: 0 },
+                    shadowOpacity: 1,
+                    shadowRadius: 8,
+                  }}
+                />
+                <View style={{ height: 1, width: 60, backgroundColor: 'rgba(168, 212, 120, 0.4)' }} />
+              </Animated.View>
+            </>
+          )}
         </View>
 
         {/* Bottom action buttons — anchored near the bottom */}
@@ -758,68 +926,132 @@ export function MagicOracleOverlay({
             </View>
           </Animated.View>
 
-          {/* Ask Again button */}
-          <Animated.View
-            entering={FadeIn.delay(250).duration(600)}
-            style={{
-              shadowColor: '#a8d478',
-              shadowOffset: { width: 0, height: 0 },
-              shadowOpacity: 0.5,
-              shadowRadius: 18,
-            }}
-          >
-            <View
+          {lockedView ? (
+            /* Unlock Now button — primary CTA when oracle is locked */
+            <Animated.View
+              entering={FadeIn.delay(300).duration(600)}
               style={{
-                borderRadius: 32,
-                borderWidth: 1.5,
-                borderColor: 'rgba(244, 233, 168, 0.8)',
-                backgroundColor: 'rgba(20, 60, 35, 0.65)',
-                overflow: 'hidden',
-                minWidth: 200,
+                shadowColor: '#50c878',
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.8,
+                shadowRadius: 20,
               }}
             >
-              <Pressable
-                onPress={handleAskAgain}
-                style={({ pressed }) => ({
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  paddingVertical: 14,
-                  paddingHorizontal: 28,
-                  backgroundColor: pressed ? 'rgba(168, 212, 120, 0.28)' : 'transparent',
-                })}
+              <View
+                style={{
+                  borderRadius: 32,
+                  borderWidth: 1.5,
+                  borderColor: 'rgba(244, 233, 168, 0.9)',
+                  backgroundColor: '#50c878',
+                  overflow: 'hidden',
+                  minWidth: 220,
+                }}
               >
-                <Sparkles
-                  size={14}
-                  color="rgba(244, 233, 168, 0.9)"
-                  fill="rgba(244, 233, 168, 0.4)"
-                  style={{ marginRight: 10 }}
-                />
-                <Text
-                  style={{
-                    color: '#f4e9a8',
-                    fontSize: 15,
-                    fontFamily: 'serif',
-                    fontWeight: '300',
-                    letterSpacing: 1.5,
-                    textAlign: 'center',
-                    textShadowColor: 'rgba(244, 233, 168, 0.7)',
-                    textShadowOffset: { width: 0, height: 0 },
-                    textShadowRadius: 8,
-                  }}
+                <Pressable
+                  onPress={handleUnlockPress}
+                  accessibilityRole="button"
+                  accessibilityLabel="Unlock unlimited oracle messages"
+                  style={({ pressed }) => ({
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingVertical: 14,
+                    paddingHorizontal: 28,
+                    backgroundColor: pressed ? '#3daa62' : 'transparent',
+                  })}
                 >
-                  Ask Again
-                </Text>
-                <Sparkles
-                  size={14}
-                  color="rgba(244, 233, 168, 0.9)"
-                  fill="rgba(244, 233, 168, 0.4)"
-                  style={{ marginLeft: 10 }}
-                />
-              </Pressable>
-            </View>
-          </Animated.View>
+                  <Sparkles
+                    size={14}
+                    color="#0a1f0e"
+                    fill="rgba(10, 31, 14, 0.6)"
+                    style={{ marginRight: 10 }}
+                  />
+                  <Text
+                    style={{
+                      color: '#0a1f0e',
+                      fontSize: 15,
+                      fontFamily: 'serif',
+                      fontWeight: '600',
+                      letterSpacing: 1.5,
+                      textAlign: 'center',
+                    }}
+                  >
+                    Unlock Now
+                  </Text>
+                  <Sparkles
+                    size={14}
+                    color="#0a1f0e"
+                    fill="rgba(10, 31, 14, 0.6)"
+                    style={{ marginLeft: 10 }}
+                  />
+                </Pressable>
+              </View>
+            </Animated.View>
+          ) : (
+            /* Ask Again button */
+            <Animated.View
+              entering={FadeIn.delay(250).duration(600)}
+              style={{
+                shadowColor: '#a8d478',
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.5,
+                shadowRadius: 18,
+              }}
+            >
+              <View
+                style={{
+                  borderRadius: 32,
+                  borderWidth: 1.5,
+                  borderColor: 'rgba(244, 233, 168, 0.8)',
+                  backgroundColor: 'rgba(20, 60, 35, 0.65)',
+                  overflow: 'hidden',
+                  minWidth: 200,
+                }}
+              >
+                <Pressable
+                  onPress={handleAskAgain}
+                  style={({ pressed }) => ({
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingVertical: 14,
+                    paddingHorizontal: 28,
+                    backgroundColor: pressed ? 'rgba(168, 212, 120, 0.28)' : 'transparent',
+                  })}
+                >
+                  <Sparkles
+                    size={14}
+                    color="rgba(244, 233, 168, 0.9)"
+                    fill="rgba(244, 233, 168, 0.4)"
+                    style={{ marginRight: 10 }}
+                  />
+                  <Text
+                    style={{
+                      color: '#f4e9a8',
+                      fontSize: 15,
+                      fontFamily: 'serif',
+                      fontWeight: '300',
+                      letterSpacing: 1.5,
+                      textAlign: 'center',
+                      textShadowColor: 'rgba(244, 233, 168, 0.7)',
+                      textShadowOffset: { width: 0, height: 0 },
+                      textShadowRadius: 8,
+                    }}
+                  >
+                    Ask Again
+                  </Text>
+                  <Sparkles
+                    size={14}
+                    color="rgba(244, 233, 168, 0.9)"
+                    fill="rgba(244, 233, 168, 0.4)"
+                    style={{ marginLeft: 10 }}
+                  />
+                </Pressable>
+              </View>
+            </Animated.View>
+          )}
         </View>
       </View>
     </Modal>

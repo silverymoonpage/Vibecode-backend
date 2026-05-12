@@ -726,6 +726,12 @@ export default function EnchantedForestScreen() {
     setOracleVisible(false);
   }, []);
 
+  const handleOracleUnlockRequest = useCallback(() => {
+    setOracleVisible(false);
+    setPendingLockedIndex(null);
+    setPaywallVisible(true);
+  }, []);
+
   const handleBeginJourney = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     scrollViewRef.current?.scrollTo({ y: SCREEN_HEIGHT, animated: true });
@@ -990,7 +996,11 @@ export default function EnchantedForestScreen() {
       <AudioControlButton />
 
       {/* Magic Oracle full-screen overlay */}
-      <MagicOracleOverlay visible={oracleVisible} onClose={handleCloseOracle} />
+      <MagicOracleOverlay
+        visible={oracleVisible}
+        onClose={handleCloseOracle}
+        onRequestUnlock={handleOracleUnlockRequest}
+      />
     </View>
   );
 }

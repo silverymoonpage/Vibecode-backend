@@ -223,6 +223,7 @@ function ChapterPage({ message }: { message: GuidanceMessage }) {
                 textShadowColor: 'rgba(80, 200, 120, 0.5)',
                 textShadowOffset: { width: 0, height: 0 },
                 textShadowRadius: 10,
+                marginTop: message.title === 'Your Guides' ? 140 : 0,
               }}
             >
               {message.title}
@@ -381,6 +382,7 @@ function ChapterPage({ message }: { message: GuidanceMessage }) {
                 textShadowColor: 'rgba(80, 200, 120, 0.5)',
                 textShadowOffset: { width: 0, height: 0 },
                 textShadowRadius: 10,
+                marginTop: message.title === 'Your Guides' ? 140 : 0,
               }}
             >
               {message.title}

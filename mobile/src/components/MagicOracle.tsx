@@ -883,8 +883,8 @@ export function MagicOracleOverlay({
                 exiting={FadeOut.duration(200)}
                 style={{
                   color: '#d4f0c8',
-                  fontSize: 22,
-                  lineHeight: 35,
+                  fontSize: 28,
+                  lineHeight: 38,
                   fontFamily: 'serif',
                   fontStyle: 'italic',
                   textAlign: 'center',
@@ -893,8 +893,9 @@ export function MagicOracleOverlay({
                   textShadowOffset: { width: 0, height: 0 },
                   textShadowRadius: 14,
                   paddingHorizontal: 24,
-                  maxWidth: 320,
-                  alignSelf: 'center',
+                  maxWidth: SCREEN_WIDTH * 0.85,
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
                   flexWrap: 'wrap',
                 }}
               >

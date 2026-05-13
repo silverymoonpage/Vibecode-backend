@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { View, Text, Pressable, Modal, Dimensions } from 'react-native';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import Animated, {
@@ -144,13 +145,18 @@ function OracleParticle({
   left,
   size,
   duration,
+  color = '#cfeac0',
+  glow = '#a8e89a',
 }: {
   delay: number;
   left: number;
   size: number;
   duration: number;
+  color?: string;
+  glow?: string;
 }) {
   const translateY = useSharedValue(0);
+  const translateX = useSharedValue(0);
   const opacity = useSharedValue(0);
 
   useEffect(() => {
@@ -167,13 +173,28 @@ function OracleParticle({
         -1
       )
     );
+    // Gentle horizontal drift — gives fireflies a meandering path
+    translateX.value = withDelay(
+      delay,
+      withRepeat(
+        withSequence(
+          withTiming(12, { duration: duration * 0.5, easing: Easing.inOut(Easing.ease) }),
+          withTiming(-12, { duration: duration * 0.5, easing: Easing.inOut(Easing.ease) })
+        ),
+        -1,
+        true
+      )
+    );
+    // Firefly flicker — slow pulse instead of a single fade
     opacity.value = withDelay(
       delay,
       withRepeat(
         withSequence(
-          withTiming(0.7, { duration: duration * 0.2 }),
-          withTiming(0.3, { duration: duration * 0.6 }),
-          withTiming(0, { duration: duration * 0.2 })
+          withTiming(0.85, { duration: duration * 0.15 }),
+          withTiming(0.25, { duration: duration * 0.25 }),
+          withTiming(0.7, { duration: duration * 0.25 }),
+          withTiming(0.2, { duration: duration * 0.2 }),
+          withTiming(0, { duration: duration * 0.15 })
         ),
         -1
       )
@@ -181,7 +202,7 @@ function OracleParticle({
   }, []);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: translateY.value }],
+    transform: [{ translateY: translateY.value }, { translateX: translateX.value }],
     opacity: opacity.value,
   }));
 
@@ -196,11 +217,11 @@ function OracleParticle({
           width: size,
           height: size,
           borderRadius: size / 2,
-          backgroundColor: '#cfeac0',
-          shadowColor: '#a8e89a',
+          backgroundColor: color,
+          shadowColor: glow,
           shadowOffset: { width: 0, height: 0 },
           shadowOpacity: 1,
-          shadowRadius: 6,
+          shadowRadius: 8,
         },
         animatedStyle,
       ]}
@@ -495,10 +516,28 @@ export function MagicOracleOverlay({
           backgroundColor: '#020806',
         }}
       >
-        {/* Deep forest gradient base — near-black with green undertones */}
+        {/* Enchanted forest backdrop — same image as the welcome screen */}
+        <Image
+          source={require('@/../assets/images/enchanted-forest-cover.png')}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: SCREEN_WIDTH,
+            height: SCREEN_HEIGHT,
+          }}
+          contentFit="cover"
+        />
+
+        {/* Mysterious moonlight overlay — deep greens and cool shadow, no warm sun */}
         <LinearGradient
-          colors={['#02110a', '#04190f', '#020806', '#000000']}
-          locations={[0, 0.4, 0.8, 1]}
+          colors={[
+            'rgba(2, 14, 18, 0.72)',
+            'rgba(4, 24, 20, 0.68)',
+            'rgba(2, 14, 12, 0.85)',
+            'rgba(0, 6, 6, 0.96)',
+          ]}
+          locations={[0, 0.4, 0.75, 1]}
           style={{
             position: 'absolute',
             top: 0,
@@ -508,83 +547,92 @@ export function MagicOracleOverlay({
           }}
         />
 
-        {/* Painted forest backdrop — silhouetted trees rendered in SVG */}
+        {/* Cool blue-green wash to push the scene from "day" toward "midnight" */}
+        <LinearGradient
+          colors={['rgba(20, 60, 70, 0.18)', 'rgba(10, 40, 38, 0.12)', 'rgba(2, 10, 12, 0.4)']}
+          locations={[0, 0.5, 1]}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+        />
+
+        {/* Moon + filtered moonlight shafts */}
         <Svg
           width={SCREEN_WIDTH}
           height={SCREEN_HEIGHT}
           style={{ position: 'absolute', top: 0, left: 0 }}
+          pointerEvents="none"
         >
           <Defs>
             <RadialGradient id="moon" cx="50%" cy="50%" rx="50%" ry="50%">
-              <Stop offset="0%" stopColor="#cfe8c0" stopOpacity="0.55" />
-              <Stop offset="60%" stopColor="#5a8a6a" stopOpacity="0.18" />
+              <Stop offset="0%" stopColor="#dcecdc" stopOpacity="0.55" />
+              <Stop offset="45%" stopColor="#9cb8b0" stopOpacity="0.20" />
+              <Stop offset="100%" stopColor="#000000" stopOpacity="0" />
+            </RadialGradient>
+            <RadialGradient id="canopyLight" cx="50%" cy="50%" rx="50%" ry="50%">
+              <Stop offset="0%" stopColor="#c4dcc8" stopOpacity="0.22" />
               <Stop offset="100%" stopColor="#000000" stopOpacity="0" />
             </RadialGradient>
             <SvgLinearGradient id="forestFloor" x1="0%" y1="0%" x2="0%" y2="100%">
               <Stop offset="0%" stopColor="#000000" stopOpacity="0" />
-              <Stop offset="100%" stopColor="#000000" stopOpacity="0.95" />
+              <Stop offset="100%" stopColor="#000000" stopOpacity="0.92" />
             </SvgLinearGradient>
           </Defs>
 
-          {/* Soft moon-glow far behind */}
-          <Circle cx={SCREEN_WIDTH * 0.7} cy={SCREEN_HEIGHT * 0.18} r={140} fill="url(#moon)" />
-          <Circle cx={SCREEN_WIDTH * 0.7} cy={SCREEN_HEIGHT * 0.18} r={30} fill="rgba(220,240,210,0.35)" />
+          {/* Soft moon high in the sky */}
+          <Circle cx={SCREEN_WIDTH * 0.72} cy={SCREEN_HEIGHT * 0.13} r={180} fill="url(#moon)" />
+          <Circle cx={SCREEN_WIDTH * 0.72} cy={SCREEN_HEIGHT * 0.13} r={32} fill="rgba(220,235,220,0.4)" />
+          <Circle cx={SCREEN_WIDTH * 0.72} cy={SCREEN_HEIGHT * 0.13} r={18} fill="rgba(240,250,235,0.85)" />
 
-          {/* Distant tree silhouettes — back layer */}
-          {Array.from({ length: 9 }).map((_, i) => {
-            const x = (i / 8) * SCREEN_WIDTH + (i % 2 === 0 ? -10 : 14);
-            const height = 220 + (i % 3) * 50;
-            const top = SCREEN_HEIGHT - height - 40;
-            return (
-              <Path
-                key={`bg-tree-${i}`}
-                d={`M ${x} ${SCREEN_HEIGHT} L ${x} ${top + 40} L ${x - 22} ${top + 70} L ${x - 8} ${top + 60} L ${x - 18} ${top + 30} L ${x - 4} ${top + 24} L ${x} ${top} L ${x + 4} ${top + 24} L ${x + 18} ${top + 30} L ${x + 8} ${top + 60} L ${x + 22} ${top + 70} L ${x + 4} ${top + 50} L ${x + 4} ${SCREEN_HEIGHT} Z`}
-                fill="#031208"
-                opacity={0.7}
-              />
-            );
-          })}
+          {/* Moonlight filtering through the canopy */}
+          <Circle cx={SCREEN_WIDTH * 0.22} cy={SCREEN_HEIGHT * 0.24} r={130} fill="url(#canopyLight)" />
+          <Circle cx={SCREEN_WIDTH * 0.5} cy={SCREEN_HEIGHT * 0.34} r={110} fill="url(#canopyLight)" />
+          <Circle cx={SCREEN_WIDTH * 0.82} cy={SCREEN_HEIGHT * 0.46} r={95} fill="url(#canopyLight)" />
 
-          {/* Foreground trees — taller, darker */}
-          {[
-            { x: SCREEN_WIDTH * 0.08, h: 360 },
-            { x: SCREEN_WIDTH * 0.22, h: 300 },
-            { x: SCREEN_WIDTH * 0.82, h: 380 },
-            { x: SCREEN_WIDTH * 0.94, h: 310 },
-          ].map((t, i) => {
-            const top = SCREEN_HEIGHT - t.h;
-            return (
-              <Path
-                key={`fg-tree-${i}`}
-                d={`M ${t.x} ${SCREEN_HEIGHT} L ${t.x} ${top + 60} L ${t.x - 34} ${top + 100} L ${t.x - 10} ${top + 80} L ${t.x - 26} ${top + 40} L ${t.x - 6} ${top + 30} L ${t.x} ${top} L ${t.x + 6} ${top + 30} L ${t.x + 26} ${top + 40} L ${t.x + 10} ${top + 80} L ${t.x + 34} ${top + 100} L ${t.x + 6} ${top + 70} L ${t.x + 6} ${SCREEN_HEIGHT} Z`}
-                fill="#000000"
-                opacity={0.95}
-              />
-            );
-          })}
-
-          {/* Forest floor gradient at the bottom */}
+          {/* Deeper forest floor shadow */}
           <Path
-            d={`M 0 ${SCREEN_HEIGHT * 0.7} L ${SCREEN_WIDTH} ${SCREEN_HEIGHT * 0.7} L ${SCREEN_WIDTH} ${SCREEN_HEIGHT} L 0 ${SCREEN_HEIGHT} Z`}
+            d={`M 0 ${SCREEN_HEIGHT * 0.65} L ${SCREEN_WIDTH} ${SCREEN_HEIGHT * 0.65} L ${SCREEN_WIDTH} ${SCREEN_HEIGHT} L 0 ${SCREEN_HEIGHT} Z`}
             fill="url(#forestFloor)"
           />
         </Svg>
 
-        {/* Floating particles drifting upward */}
-        <OracleParticle delay={0} left={SCREEN_WIDTH * 0.1} size={3} duration={11000} />
-        <OracleParticle delay={1200} left={SCREEN_WIDTH * 0.22} size={2} duration={9000} />
-        <OracleParticle delay={400} left={SCREEN_WIDTH * 0.36} size={3} duration={12000} />
-        <OracleParticle delay={2000} left={SCREEN_WIDTH * 0.52} size={2} duration={10000} />
-        <OracleParticle delay={800} left={SCREEN_WIDTH * 0.68} size={3} duration={13000} />
-        <OracleParticle delay={1800} left={SCREEN_WIDTH * 0.84} size={2} duration={10500} />
-        <OracleParticle delay={2600} left={SCREEN_WIDTH * 0.92} size={3} duration={11500} />
+        {/* Fireflies drifting upward — mixed warm amber and cool moonlit green */}
+        <OracleParticle delay={0} left={SCREEN_WIDTH * 0.06} size={3} duration={11000} color="#f4e9a8" glow="#f4e9a8" />
+        <OracleParticle delay={900} left={SCREEN_WIDTH * 0.14} size={2.5} duration={13500} />
+        <OracleParticle delay={2100} left={SCREEN_WIDTH * 0.22} size={3.5} duration={9500} color="#fff2c0" glow="#f4e9a8" />
+        <OracleParticle delay={600} left={SCREEN_WIDTH * 0.32} size={2} duration={12500} />
+        <OracleParticle delay={1700} left={SCREEN_WIDTH * 0.40} size={3} duration={10500} color="#f4e9a8" glow="#f4e9a8" />
+        <OracleParticle delay={2600} left={SCREEN_WIDTH * 0.48} size={2.5} duration={14000} />
+        <OracleParticle delay={300} left={SCREEN_WIDTH * 0.56} size={3.5} duration={11500} color="#fff2c0" glow="#f4e9a8" />
+        <OracleParticle delay={1500} left={SCREEN_WIDTH * 0.64} size={2} duration={13000} />
+        <OracleParticle delay={2300} left={SCREEN_WIDTH * 0.72} size={3} duration={10000} color="#f4e9a8" glow="#f4e9a8" />
+        <OracleParticle delay={800} left={SCREEN_WIDTH * 0.80} size={2.5} duration={12500} />
+        <OracleParticle delay={2900} left={SCREEN_WIDTH * 0.88} size={3.5} duration={11000} color="#fff2c0" glow="#f4e9a8" />
+        <OracleParticle delay={1200} left={SCREEN_WIDTH * 0.94} size={2} duration={13500} />
 
-        {/* Top vignette */}
+        {/* Top vignette — deepens the sky and frames the oracle */}
         <LinearGradient
-          colors={['rgba(0,0,0,0.7)', 'transparent']}
+          colors={['rgba(0,0,0,0.85)', 'rgba(0,0,0,0.35)', 'transparent']}
+          locations={[0, 0.5, 1]}
           style={{
             position: 'absolute',
             top: 0,
+            left: 0,
+            right: 0,
+            height: 240,
+          }}
+        />
+
+        {/* Bottom vignette — settles the floor in sacred darkness */}
+        <LinearGradient
+          colors={['transparent', 'rgba(0,0,0,0.65)']}
+          style={{
+            position: 'absolute',
+            bottom: 0,
             left: 0,
             right: 0,
             height: 200,

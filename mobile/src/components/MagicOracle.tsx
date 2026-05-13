@@ -808,7 +808,7 @@ export function MagicOracleOverlay({
                 style={{
                   color: '#d4f0c8',
                   fontSize: 22,
-                  lineHeight: 34,
+                  lineHeight: 35,
                   fontFamily: 'serif',
                   fontStyle: 'italic',
                   textAlign: 'center',
@@ -816,7 +816,10 @@ export function MagicOracleOverlay({
                   textShadowColor: 'rgba(168, 232, 154, 0.55)',
                   textShadowOffset: { width: 0, height: 0 },
                   textShadowRadius: 14,
-                  paddingHorizontal: 8,
+                  paddingHorizontal: 24,
+                  maxWidth: 320,
+                  alignSelf: 'center',
+                  flexWrap: 'wrap',
                 }}
               >
                 “{message}”

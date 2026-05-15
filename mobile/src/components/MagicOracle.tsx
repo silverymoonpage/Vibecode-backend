@@ -35,36 +35,6 @@ import { AudioControlButton } from '@/components/AudioControlButton';
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 // ---------------------------------------------------------------------------
-// Hidden developer unlock — 5 quick taps on the crystal bowl unlocks the
-// oracle for the current session only (no paywall, no persistence).
-// Module-level state so taps on the home-screen bowl AND the in-modal bowl
-// count toward the same streak.
-// ---------------------------------------------------------------------------
-const DEV_UNLOCK_TAP_WINDOW_MS = 2000;
-const DEV_UNLOCK_REQUIRED_TAPS = 5;
-let devTapCount = 0;
-let devTapLastTime = 0;
-
-function registerCrystalBowlTap(): void {
-  const { sessionUnlocked, setSessionUnlocked } = usePurchaseStore.getState();
-  if (sessionUnlocked) return;
-
-  const now = Date.now();
-  if (now - devTapLastTime > DEV_UNLOCK_TAP_WINDOW_MS) {
-    devTapCount = 1;
-  } else {
-    devTapCount += 1;
-  }
-  devTapLastTime = now;
-
-  if (devTapCount >= DEV_UNLOCK_REQUIRED_TAPS) {
-    devTapCount = 0;
-    setSessionUnlocked(true);
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-  }
-}
-
-// ---------------------------------------------------------------------------
 // Crystal bowl SVG — a glowing, mystical chalice with a luminous orb inside
 // ---------------------------------------------------------------------------
 function CrystalBowlGraphic({ size = 88 }: { size?: number }) {
@@ -290,7 +260,6 @@ export function CrystalBowlButton({ onPress }: { onPress: () => void }) {
   };
   const handlePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    registerCrystalBowlTap();
     onPress();
   };
 
@@ -427,16 +396,10 @@ export function MagicOracleOverlay({
   const isMuted = useAudioStore((s) => s.isMuted);
   useAmbientSound(visible, isMuted);
 
-  // Subscribe to the hidden session-unlock flag so the overlay reacts the
-  // moment the user finishes the 5-tap developer gesture.
-  const sessionUnlocked = usePurchaseStore((s) => s.sessionUnlocked);
-
-  // Decide which view to show every time the overlay opens.
-  // Free users get exactly one message; after that the lock screen takes over.
   useEffect(() => {
     if (visible) {
       const state = usePurchaseStore.getState();
-      const unlocked = state.isUnlocked || state.sessionUnlocked;
+      const unlocked = state.isUnlocked;
       if (unlocked || !state.hasUsedFreeOracle) {
         setLockedView(false);
         setMessage(pickRandomMessage(null));
@@ -449,16 +412,6 @@ export function MagicOracleOverlay({
       }
     }
   }, [visible]);
-
-  // If the dev-unlock flips on while the lock screen is showing, reveal a
-  // fresh message immediately so the tester can keep going.
-  useEffect(() => {
-    if (visible && sessionUnlocked && lockedView) {
-      setLockedView(false);
-      setMessage((prev) => pickRandomMessage(prev));
-      setRevealKey((k) => k + 1);
-    }
-  }, [sessionUnlocked, visible, lockedView]);
 
   const orbPulse = useSharedValue(0.6);
   useEffect(() => {
@@ -480,16 +433,12 @@ export function MagicOracleOverlay({
   const handleAskAgain = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     const state = usePurchaseStore.getState();
-    if (state.isUnlocked || state.sessionUnlocked) {
+    if (state.isUnlocked) {
       setMessage((prev) => pickRandomMessage(prev));
       setRevealKey((k) => k + 1);
     } else {
       setLockedView(true);
     }
-  }, []);
-
-  const handleBowlTap = useCallback(() => {
-    registerCrystalBowlTap();
   }, []);
 
   const handleUnlockPress = useCallback(() => {
@@ -726,19 +675,6 @@ export function MagicOracleOverlay({
                 >
                   <Lock size={30} color="#f4e9a8" />
                 </View>
-                {/* Invisible hit target — counts taps for the hidden 5-tap dev unlock */}
-                <Pressable
-                  onPress={handleBowlTap}
-                  accessibilityElementsHidden
-                  importantForAccessibility="no-hide-descendants"
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                  }}
-                />
               </Animated.View>
 
               {/* Decorative top sparkles row */}
@@ -861,19 +797,6 @@ export function MagicOracleOverlay({
                 ]}
               >
                 <CrystalBowlGraphic size={120} />
-                {/* Invisible hit target — counts taps for the hidden 5-tap dev unlock */}
-                <Pressable
-                  onPress={handleBowlTap}
-                  accessibilityElementsHidden
-                  importantForAccessibility="no-hide-descendants"
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                  }}
-                />
               </Animated.View>
 
               {/* Decorative top sparkles row */}

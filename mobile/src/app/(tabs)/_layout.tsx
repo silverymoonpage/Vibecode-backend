@@ -15,12 +15,6 @@ export default function TabLayout() {
           title: 'Enchanted Forest',
         }}
       />
-      <Tabs.Screen
-        name="two"
-        options={{
-          href: null, // Hide this tab
-        }}
-      />
     </Tabs>
   );
 }

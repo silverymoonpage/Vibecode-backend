@@ -7,9 +7,6 @@ interface PurchaseStore {
   setUnlocked: (val: boolean) => void;
   hasUsedFreeOracle: boolean;
   setHasUsedFreeOracle: (val: boolean) => void;
-  // Hidden developer/testing unlock — in-memory only, resets on app reload.
-  sessionUnlocked: boolean;
-  setSessionUnlocked: (val: boolean) => void;
 }
 
 const usePurchaseStore = create<PurchaseStore>()(
@@ -19,8 +16,6 @@ const usePurchaseStore = create<PurchaseStore>()(
       setUnlocked: (val: boolean) => set({ isUnlocked: val }),
       hasUsedFreeOracle: false,
       setHasUsedFreeOracle: (val: boolean) => set({ hasUsedFreeOracle: val }),
-      sessionUnlocked: false,
-      setSessionUnlocked: (val: boolean) => set({ sessionUnlocked: val }),
     }),
     {
       name: "purchase-storage",

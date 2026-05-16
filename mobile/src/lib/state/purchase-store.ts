@@ -24,6 +24,11 @@ const usePurchaseStore = create<PurchaseStore>()(
         isUnlocked: state.isUnlocked,
         hasUsedFreeOracle: state.hasUsedFreeOracle,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.isUnlocked = true;
+        }
+      },
     }
   )
 );

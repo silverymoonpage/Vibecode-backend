@@ -12,7 +12,7 @@ interface PurchaseStore {
 const usePurchaseStore = create<PurchaseStore>()(
   persist(
     (set) => ({
-      isUnlocked: false,
+      isUnlocked: true,
       setUnlocked: (val: boolean) => set({ isUnlocked: val }),
       hasUsedFreeOracle: false,
       setHasUsedFreeOracle: (val: boolean) => set({ hasUsedFreeOracle: val }),

@@ -86,7 +86,7 @@ export function PaywallModal({
   const insets = useSafeAreaInsets();
   const setUnlocked = usePurchaseStore((s) => s.setUnlocked);
 
-  const [displayPrice, setDisplayPrice] = useState<string>('$2.99');
+  const [displayPrice, setDisplayPrice] = useState<string>('$6.99');
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);

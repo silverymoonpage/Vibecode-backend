@@ -8,6 +8,8 @@ const envSchema = z.object({
   // Server Configuration
   PORT: z.string().optional().default("3000"),
   NODE_ENV: z.string().optional(),
+  CORS_ORIGIN: z.string().optional(),
+  OPENAI_API_KEY: z.string().optional(),
 });
 
 /**

@@ -70,9 +70,15 @@ Update `mobile/.env`:
 
 ```txt
 EXPO_PUBLIC_BACKEND_URL=https://vibecode-backend-production-bd55.up.railway.app
+EXPO_PUBLIC_UNLOCK_ALL=true
 ```
 
 Then restart Expo so it reads the new value.
+
+`EXPO_PUBLIC_UNLOCK_ALL=true` keeps all chapters and oracle messages available
+while testing. Before the public live release, set it to `false` or remove it so
+chapters after chapter 2 and oracle messages after the first free one require
+unlocking.
 
 ## Vibecode handoff
 

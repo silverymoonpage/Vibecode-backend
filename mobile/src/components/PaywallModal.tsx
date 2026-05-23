@@ -24,6 +24,7 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Sparkles, Lock } from 'lucide-react-native';
 import usePurchaseStore from '@/lib/state/purchase-store';
+import { UNLOCK_PRICE } from '@/lib/paywall-config';
 
 const PRODUCT_ID = 'com.enchantedpath.fulljourney';
 
@@ -86,7 +87,7 @@ export function PaywallModal({
   const insets = useSafeAreaInsets();
   const setUnlocked = usePurchaseStore((s) => s.setUnlocked);
 
-  const [displayPrice, setDisplayPrice] = useState<string>('$6.99');
+  const [displayPrice, setDisplayPrice] = useState<string>(UNLOCK_PRICE);
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);

@@ -17,9 +17,7 @@ import Svg, { Path, Circle, Defs, RadialGradient, Stop } from 'react-native-svg'
 import { Sparkles, TreePine, Star, Lock } from 'lucide-react-native';
 import { enchantedMessages, type GuidanceMessage } from '@/data/enchanted-messages';
 import usePurchaseStore from '@/lib/state/purchase-store';
-
-// Chapters 0–2 are always free; 3–9 require purchase
-const FREE_CHAPTER_COUNT = 3;
+import { FREE_CHAPTER_COUNT } from '@/lib/paywall-config';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 

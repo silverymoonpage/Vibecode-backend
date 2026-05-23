@@ -30,6 +30,7 @@ import { oracleMessages } from '@/data/oracle-messages';
 import { useAmbientSound } from '@/hooks/useAmbientSound';
 import useAudioStore from '@/lib/state/audio-store';
 import usePurchaseStore from '@/lib/state/purchase-store';
+import { UNLOCK_PRICE } from '@/lib/paywall-config';
 import { AudioControlButton } from '@/components/AudioControlButton';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -743,7 +744,7 @@ export function MagicOracleOverlay({
                 }}
               >
                 The forest has more secrets to share. Unlock unlimited oracle
-                messages to continue your journey.
+                messages for {UNLOCK_PRICE} to continue your journey.
               </Animated.Text>
 
               {/* Decorative divider beneath the message */}
@@ -1028,7 +1029,7 @@ export function MagicOracleOverlay({
                       textAlign: 'center',
                     }}
                   >
-                    Unlock Now
+                    Unlock · {UNLOCK_PRICE}
                   </Text>
                   <Sparkles
                     size={14}

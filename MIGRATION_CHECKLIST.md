@@ -55,7 +55,7 @@ Railway will provide `PORT` automatically, so do not hard-code it.
 After deployment, test:
 
 ```txt
-https://your-railway-domain.up.railway.app/health
+https://vibecode-backend-production-bd55.up.railway.app/health
 ```
 
 Expected response:
@@ -69,7 +69,7 @@ Expected response:
 Update `mobile/.env`:
 
 ```txt
-EXPO_PUBLIC_BACKEND_URL=https://your-railway-domain.up.railway.app
+EXPO_PUBLIC_BACKEND_URL=https://vibecode-backend-production-bd55.up.railway.app
 ```
 
 Then restart Expo so it reads the new value.

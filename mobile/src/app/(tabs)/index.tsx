@@ -518,10 +518,6 @@ function ChapterViewerModal({
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const hasScrolledToInitial = useRef(false);
 
-  // Ambient forest sound
-  const isMuted = useAudioStore((s) => s.isMuted);
-  useAmbientSound(visible, isMuted);
-
   // When modal opens with a new initialIndex, scroll to it
   useEffect(() => {
     if (visible) {
@@ -712,11 +708,14 @@ function ChapterViewerModal({
 export default function EnchantedForestScreen() {
   const insets = useSafeAreaInsets();
   const scrollViewRef = useRef<ScrollView>(null);
+  const isMuted = useAudioStore((s) => s.isMuted);
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [paywallVisible, setPaywallVisible] = useState(false);
   const [pendingLockedIndex, setPendingLockedIndex] = useState<number | null>(null);
   const [oracleVisible, setOracleVisible] = useState(false);
+
+  useAmbientSound(true, isMuted);
 
   const handleOpenOracle = useCallback(() => {
     setOracleVisible(true);

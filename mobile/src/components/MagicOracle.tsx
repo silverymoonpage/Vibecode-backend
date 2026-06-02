@@ -27,8 +27,6 @@ import Svg, {
 } from 'react-native-svg';
 import { X, Sparkles, Lock } from 'lucide-react-native';
 import { oracleMessages } from '@/data/oracle-messages';
-import { useAmbientSound } from '@/hooks/useAmbientSound';
-import useAudioStore from '@/lib/state/audio-store';
 import usePurchaseStore from '@/lib/state/purchase-store';
 import { UNLOCK_PRICE } from '@/lib/paywall-config';
 import { AudioControlButton } from '@/components/AudioControlButton';
@@ -392,10 +390,6 @@ export function MagicOracleOverlay({
   const [message, setMessage] = useState<string>('');
   const [revealKey, setRevealKey] = useState<number>(0);
   const [lockedView, setLockedView] = useState<boolean>(false);
-
-  // Ambient music — plays while the Oracle is visible, respects global mute state
-  const isMuted = useAudioStore((s) => s.isMuted);
-  useAmbientSound(visible, isMuted);
 
   useEffect(() => {
     if (visible) {
